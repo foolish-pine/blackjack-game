@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint"
+  ],
+  "plugins": [],
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "globals": {},
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false
+      }
+    ],
+    "no-console": "off",
+    "no-undef": "warn",
+    "no-alert": "warn",
+    "eqeqeq": "warn",
+    "no-var": "warn",
+    "semi": "warn"
+  }
+}
