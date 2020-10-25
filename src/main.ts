@@ -54,7 +54,7 @@ for (let i = 1; i < 14; i++) {
   }
 }
 
-const createDeck = () => {
+const shuffleDeck = () => {
   shuffledDeck = [...deck];
   // デッキをシャッフルする;
   const cardNum = shuffledDeck.length;
