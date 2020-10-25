@@ -234,7 +234,7 @@ const checkResult = () => {
   console.log(colors.bold("Please Enter to start next game"));
   readlineSync.question(colors.bold("(Enter)"));
   console.log("");
-  startGame();
+  initGame();
 };
 
 const selectAction = () => {
@@ -318,7 +318,7 @@ const selectAction = () => {
   }
 };
 
-const startGame = () => {
+const initGame = () => {
   clearResult();
   shuffleDeck();
   firstDeal();
@@ -341,4 +341,4 @@ console.log(
 console.log(colors.bold("Please Enter to Start"));
 readlineSync.question();
 createDeck();
-startGame();
+initGame();
