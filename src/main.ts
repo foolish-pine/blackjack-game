@@ -19,6 +19,8 @@ let playersSum = 0;
 let playersWin = 0;
 let playersLose = 0;
 let playersDraw = 0;
+let money = 1000;
+let bet = 0;
 
 const createDeck = () => {
   let id = 0;
@@ -74,6 +76,30 @@ const clearResult = () => {
   playersHand = [];
   dealersSum = 0;
   playersSum = 0;
+};
+
+const setBet = () => {
+  console.log(colors.bold.red("Your money: ") + colors.bold.red(`$${money}`));
+  const input = readlineSync.question(colors.bold("Set Your Bet: "));
+  if (isNaN(Number(input))) {
+    console.log("");
+    console.log(colors.bold("Please input number."));
+    setBet();
+  } else if (!Number.isInteger(Number(input)) || Number(input) <= 0) {
+    console.log("");
+    console.log(colors.bold("Please input a positive integer"));
+    setBet();
+  } else if (Number(input) > money) {
+    console.log("");
+    console.log(colors.bold("Please bet an amount of money you can."));
+    setBet();
+  } else {
+    bet = Number(input);
+    console.log(colors.bold.red("Your bet: ") + colors.bold.red(`$${bet}`));
+    money -= bet;
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
+  }
 };
 
 const firstDeal = () => {
@@ -321,6 +347,7 @@ const selectAction = () => {
 const initGame = () => {
   clearResult();
   shuffleDeck();
+  setBet();
   firstDeal();
   displayHand();
   checkPlayersHand();
