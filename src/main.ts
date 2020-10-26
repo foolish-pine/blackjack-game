@@ -79,7 +79,9 @@ const clearResult = () => {
 };
 
 const setBet = () => {
-  console.log(colors.bold.red("Your money: ") + colors.bold.red(`$${money}`));
+  console.log(
+    colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+  );
   const input = readlineSync.question(colors.bold("Set Your Bet: "));
   if (isNaN(Number(input))) {
     console.log("");
@@ -95,7 +97,9 @@ const setBet = () => {
     setBet();
   } else {
     bet = Number(input);
-    console.log(colors.bold.red("Your bet: ") + colors.bold.red(`$${bet}`));
+    console.log(
+      colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
+    );
     money -= bet;
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
@@ -151,9 +155,6 @@ const checkPlayersHand = () => {
   const handNum = playersHand.map((card) => card.number);
   playersSum = handNum.reduce((a, b) => a + b);
   if (handNum.length === 2 && playersSum === 21) {
-    console.log(colors.rainbow("B L A C K J A C K"));
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
     checkResult();
     return;
   }
@@ -230,22 +231,58 @@ const checkResult = () => {
   if (dealersSum <= 21 && playersSum <= 21) {
     if (dealersSum === playersSum) {
       console.log(colors.bold("Draw"));
+      money += bet;
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersDraw++;
     } else if (dealersSum > playersSum) {
       console.log(colors.bold.blue("You Lose"));
+      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersLose++;
     } else {
-      console.log(colors.bold.red("You Win!!"));
+      const handNum = playersHand.map((card) => card.number);
+      playersSum = handNum.reduce((a, b) => a + b);
+      if (handNum.length === 2 && playersSum === 21) {
+        console.log(colors.rainbow("B L A C K J A C K"));
+        money += 2.5 * bet;
+        console.log(colors.bold.red("You Win!!"));
+        console.log(
+          colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`)
+        );
+        console.log(
+          colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+        );
+      } else {
+        money += 2 * bet;
+        console.log(colors.bold.red("You Win!!"));
+        console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+        console.log(
+          colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+        );
+      }
       playersWin++;
     }
   } else {
     if (dealersSum > 21) {
       console.log(colors.bold.red("Dealer Burst"));
+      money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
+      console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersWin++;
     } else if (playersSum > 21) {
       console.log(colors.bold.blue("You Burst"));
       console.log(colors.bold.blue("You Lose"));
+      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersLose++;
     }
   }
@@ -305,6 +342,8 @@ const selectAction = () => {
     console.log("");
     checkPlayersHand();
   } else if (action === "d") {
+    money -= bet;
+    bet *= 2;
     playersHand.push(shuffledDeck.pop());
     if (
       playersHand[playersHand.length - 1].symbol === "♥" ||
@@ -333,7 +372,7 @@ const selectAction = () => {
     displayHand();
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    checkPlayersHand();
+    checkResult();
   } else if (action === "s") {
     checkResult();
   } else {
