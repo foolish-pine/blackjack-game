@@ -58,6 +58,13 @@ const createDeck = () => {
   }
 };
 
+const clearResult = async () => {
+  dealersHand = [];
+  playersHand = [];
+  dealersSum = 0;
+  playersSum = 0;
+};
+
 const shuffleDeck = () => {
   shuffledDeck = [...deck];
   // デッキをシャッフルする;
@@ -71,14 +78,7 @@ const shuffleDeck = () => {
   }
 };
 
-const clearResult = () => {
-  dealersHand = [];
-  playersHand = [];
-  dealersSum = 0;
-  playersSum = 0;
-};
-
-const setBet = () => {
+const setBet = async () => {
   console.log(
     colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
   );
@@ -106,7 +106,7 @@ const setBet = () => {
   }
 };
 
-const firstDeal = () => {
+const firstDeal = async () => {
   dealersHand.push(shuffledDeck.pop());
   dealersHand.push(shuffledDeck.pop());
   dealersHand[1].isOpen = false;
@@ -114,7 +114,7 @@ const firstDeal = () => {
   playersHand.push(shuffledDeck.pop());
 };
 
-const displayHand = () => {
+const displayHand = async () => {
   let dealer = colors.bold(`Dealer: `);
   let player = colors.bold(`You:    `);
   for (let i = 0; i < dealersHand.length; i++) {
@@ -151,21 +151,20 @@ const displayHand = () => {
   console.log("");
 };
 
-const checkPlayersHand = () => {
+const checkPlayersHand = async () => {
   const handNum = playersHand.map((card) => card.number);
   playersSum = handNum.reduce((a, b) => a + b);
   if (handNum.length === 2 && playersSum === 21) {
-    checkResult();
+    await checkResult();
     return;
   }
   if (playersSum > 21 && handNum.includes(11)) {
     playersSum -= handNum.filter((num) => num === 11).length * 10;
-    return;
   }
   if (playersSum < 21) {
-    selectAction();
+    await selectAction();
   } else {
-    checkResult();
+    await checkResult();
   }
 };
 
@@ -226,7 +225,7 @@ const checkDealersHand = () => {
   }
 };
 
-const checkResult = () => {
+const checkResult = async () => {
   checkDealersHand();
   if (dealersSum <= 21 && playersSum <= 21) {
     if (dealersSum === playersSum) {
@@ -297,10 +296,9 @@ const checkResult = () => {
   console.log(colors.bold("Please Enter to start next game"));
   readlineSync.question(colors.bold("(Enter)"));
   console.log("");
-  initGame();
 };
 
-const selectAction = () => {
+const selectAction = async () => {
   const action = readlineSync.question(
     colors.bold("Select Your Action. ") +
       colors.bold.green("Hit[h]") +
@@ -337,10 +335,10 @@ const selectAction = () => {
       );
       console.log("");
     }
-    displayHand();
+    await displayHand();
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    checkPlayersHand();
+    await checkPlayersHand();
   } else if (action === "d") {
     money -= bet;
     bet *= 2;
@@ -369,28 +367,33 @@ const selectAction = () => {
       );
       console.log("");
     }
-    displayHand();
+    await displayHand();
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    checkResult();
+    await checkResult();
   } else if (action === "s") {
     checkResult();
   } else {
     console.log(
       colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
     );
-    selectAction();
+    await selectAction();
   }
 };
 
-const initGame = () => {
-  clearResult();
-  shuffleDeck();
-  setBet();
-  firstDeal();
-  displayHand();
-  checkPlayersHand();
-  selectAction();
+const initGame = async () => {
+  await clearResult();
+  await shuffleDeck();
+  await setBet();
+  await firstDeal();
+  await displayHand();
+  await checkPlayersHand();
+  if (money === 0) {
+    console.log("You have no money.");
+    console.log("GAME OVER!");
+    return;
+  }
+  initGame();
 };
 
 // タイトルのアスキーアート
