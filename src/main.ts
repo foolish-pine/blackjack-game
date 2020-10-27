@@ -16,9 +16,6 @@ let dealersHand: Deck[] = [];
 let playersHand: Deck[] = [];
 let dealersSum = 0;
 let playersSum = 0;
-let playersWin = 0;
-let playersLose = 0;
-let playersDraw = 0;
 let money = 1000;
 let bet = 0;
 
@@ -237,7 +234,6 @@ const checkResult = async () => {
     console.log(
       colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
     );
-    playersLose++;
   }
   if (dealersSum <= 21 && playersSum <= 21) {
     if (dealersSum === playersSum) {
@@ -246,14 +242,12 @@ const checkResult = async () => {
       console.log(
         colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
       );
-      playersDraw++;
     } else if (dealersSum > playersSum) {
       console.log(colors.bold.blue("You Lose"));
       console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
       console.log(
         colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
       );
-      playersLose++;
     } else {
       money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
@@ -261,7 +255,6 @@ const checkResult = async () => {
       console.log(
         colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
       );
-      playersWin++;
     }
   } else {
     if (dealersSum > 21) {
@@ -272,7 +265,6 @@ const checkResult = async () => {
       console.log(
         colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
       );
-      playersWin++;
     } else if (playersSum > 21) {
       console.log(colors.bold.blue("You Burst"));
       console.log(colors.bold.blue("You Lose"));
@@ -280,17 +272,8 @@ const checkResult = async () => {
       console.log(
         colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
       );
-      playersLose++;
     }
   }
-  console.log(
-    colors.bold("Your score: ") +
-      colors.bold.red(`${playersWin} Win`) +
-      colors.bold(" / ") +
-      colors.bold.blue(`${playersLose} Lose`) +
-      colors.bold(" / ") +
-      colors.bold(`${playersDraw} Draw`)
-  );
   console.log(colors.bold("Please Enter to start next game"));
   readlineSync.question(colors.bold("(Enter)"));
   console.log("");
