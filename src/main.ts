@@ -352,8 +352,8 @@ const initGame = async () => {
   await displayHand();
   await checkPlayersHand();
   if (money === 0) {
-    console.log("You have no money.");
-    console.log("GAME OVER!");
+    console.log(colors.bold("You have no money."));
+    console.log(colors.bold("GAME OVER!"));
     return;
   }
   initGame();
