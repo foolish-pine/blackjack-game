@@ -304,7 +304,8 @@ const selectAction = async () => {
 const initGame = async () => {
   await clearResult();
   await shuffleDeck();
-  ({ money, bet } = await setBet(money));
+  bet = await setBet(money);
+  money -= bet;
   await firstDeal();
   await displayHand(dealersHand, playersHand);
   await checkPlayersHand();
