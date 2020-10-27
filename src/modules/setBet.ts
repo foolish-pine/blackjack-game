@@ -11,11 +11,11 @@ export const setBet = async (
     colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
   );
   const input = readlineSync.question(colors.bold("Set Your Bet: "));
-  if (isNaN(Number(input))) {
-    console.log("");
-    console.log(colors.bold("Please input number."));
-    setBet(money);
-  } else if (!Number.isInteger(Number(input)) || Number(input) <= 0) {
+  if (
+    isNaN(Number(input)) ||
+    !Number.isInteger(Number(input)) ||
+    Number(input) <= 0
+  ) {
     console.log("");
     console.log(colors.bold("Please input a positive integer"));
     setBet(money);
