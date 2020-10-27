@@ -3,6 +3,7 @@ import readlineSync from "readline-sync";
 import colors from "colors";
 
 import { Deck } from "./types";
+import { displayHand } from "./displayHand";
 import { setBet } from "./setBet";
 
 const deck: Deck[] = [];
@@ -78,43 +79,6 @@ const firstDeal = async () => {
   playersHand.push(shuffledDeck.pop());
 };
 
-const displayHand = async () => {
-  let dealer = colors.bold(`Dealer: `);
-  let player = colors.bold(`You:    `);
-  for (let i = 0; i < dealersHand.length; i++) {
-    if (dealersHand[i].isOpen) {
-      if (dealersHand[i].symbol === "♥" || dealersHand[i].symbol === "♦") {
-        dealer += colors.red.bgWhite(
-          ` ${dealersHand[i].symbol} ${dealersHand[i].rank} `
-        );
-      } else {
-        dealer += colors.black.bgWhite(
-          ` ${dealersHand[i].symbol} ${dealersHand[i].rank} `
-        );
-      }
-    } else {
-      dealer += colors.black.bgWhite(" ??? ");
-    }
-    dealer += "  ";
-  }
-  for (let i = 0; i < playersHand.length; i++) {
-    if (playersHand[i].symbol === "♥" || playersHand[i].symbol === "♦") {
-      player += colors.red.bgWhite(
-        ` ${playersHand[i].symbol} ${playersHand[i].rank} `
-      );
-    } else {
-      player += colors.black.bgWhite(
-        ` ${playersHand[i].symbol} ${playersHand[i].rank} `
-      );
-    }
-    player += "  ";
-  }
-  console.log(dealer);
-  console.log("");
-  console.log(player);
-  console.log("");
-};
-
 const checkPlayersHand = async () => {
   const handNum = playersHand.map((card) => card.number);
   playersSum = handNum.reduce((a, b) => a + b);
@@ -149,7 +113,7 @@ const checkDealersHand = () => {
     }
     console.log(dealer);
     console.log("");
-    displayHand();
+    displayHand(dealersHand, playersHand);
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
     if (playersSum > 21) return;
@@ -182,7 +146,7 @@ const checkDealersHand = () => {
     }
     console.log(dealer);
     console.log("");
-    displayHand();
+    displayHand(dealersHand, playersHand);
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
     checkDealersHand();
@@ -283,7 +247,7 @@ const selectAction = async () => {
       );
       console.log("");
     }
-    await displayHand();
+    await displayHand(dealersHand, playersHand);
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
     await checkPlayersHand();
@@ -323,7 +287,7 @@ const selectAction = async () => {
       );
       console.log("");
     }
-    await displayHand();
+    await displayHand(dealersHand, playersHand);
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
     await checkResult();
@@ -342,7 +306,7 @@ const initGame = async () => {
   await shuffleDeck();
   ({ money, bet } = await setBet(money));
   await firstDeal();
-  await displayHand();
+  await displayHand(dealersHand, playersHand);
   await checkPlayersHand();
   if (money === 0) {
     console.log(colors.bold("You have no money."));
