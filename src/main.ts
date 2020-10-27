@@ -324,6 +324,7 @@ const selectAction = async () => {
     money -= bet;
     bet *= 2;
     playersHand.push(shuffledDeck.pop());
+    console.log(colors.bold.cyan("You doubled down."));
     if (
       playersHand[playersHand.length - 1].symbol === "♥" ||
       playersHand[playersHand.length - 1].symbol === "♦"
