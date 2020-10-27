@@ -1,6 +1,6 @@
 import colors from "colors";
 
-import { Deck } from "./types";
+import { Deck } from "../types/Deck";
 
 export const displayHand = async (
   dealersHand: Deck[],

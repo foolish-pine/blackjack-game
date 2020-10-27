@@ -2,9 +2,9 @@ import figlet from "figlet";
 import readlineSync from "readline-sync";
 import colors from "colors";
 
-import { Deck } from "./types";
-import { displayHand } from "./displayHand";
-import { setBet } from "./setBet";
+import { Deck } from "./types/Deck";
+import { displayHand } from "./modules/displayHand";
+import { setBet } from "./modules/setBet";
 
 const deck: Deck[] = [];
 let shuffledDeck: Deck[];
