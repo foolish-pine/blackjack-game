@@ -1,15 +1,10 @@
 import readlineSync from "readline-sync";
 import colors from "colors";
 
-export const setBet = async (
-  money: number
-): Promise<{
-  money: number;
-  bet: number;
-}> => {
-  console.log(
-    colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-  );
+import { displayMoney } from "./displayMoney";
+
+export const setBet = async (money: number): Promise<number> => {
+  displayMoney(money);
   const input = readlineSync.question(colors.bold("Set Your Bet: "));
   if (
     isNaN(Number(input)) ||
@@ -28,9 +23,8 @@ export const setBet = async (
     console.log(
       colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
     );
-    money -= bet;
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    return { money, bet };
+    return bet;
   }
 };
