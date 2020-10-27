@@ -295,6 +295,13 @@ const selectAction = async () => {
     console.log("");
     await checkPlayersHand();
   } else if (action === "d") {
+    if (money - bet < 0) {
+      console.log(
+        colors.bold("You can not double down. You have enough money.")
+      );
+      selectAction();
+      return;
+    }
     money -= bet;
     bet *= 2;
     playersHand.push(shuffledDeck.pop());
