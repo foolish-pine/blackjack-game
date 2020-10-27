@@ -19,6 +19,8 @@ let playersSum = 0;
 let playersWin = 0;
 let playersLose = 0;
 let playersDraw = 0;
+let money = 1000;
+let bet = 0;
 
 const createDeck = () => {
   let id = 0;
@@ -56,6 +58,13 @@ const createDeck = () => {
   }
 };
 
+const clearResult = async () => {
+  dealersHand = [];
+  playersHand = [];
+  dealersSum = 0;
+  playersSum = 0;
+};
+
 const shuffleDeck = () => {
   shuffledDeck = [...deck];
   // デッキをシャッフルする;
@@ -69,14 +78,35 @@ const shuffleDeck = () => {
   }
 };
 
-const clearResult = () => {
-  dealersHand = [];
-  playersHand = [];
-  dealersSum = 0;
-  playersSum = 0;
+const setBet = async () => {
+  console.log(
+    colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+  );
+  const input = readlineSync.question(colors.bold("Set Your Bet: "));
+  if (isNaN(Number(input))) {
+    console.log("");
+    console.log(colors.bold("Please input number."));
+    setBet();
+  } else if (!Number.isInteger(Number(input)) || Number(input) <= 0) {
+    console.log("");
+    console.log(colors.bold("Please input a positive integer"));
+    setBet();
+  } else if (Number(input) > money) {
+    console.log("");
+    console.log(colors.bold("Please bet an amount of money you can."));
+    setBet();
+  } else {
+    bet = Number(input);
+    console.log(
+      colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
+    );
+    money -= bet;
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
+  }
 };
 
-const firstDeal = () => {
+const firstDeal = async () => {
   dealersHand.push(shuffledDeck.pop());
   dealersHand.push(shuffledDeck.pop());
   dealersHand[1].isOpen = false;
@@ -84,7 +114,7 @@ const firstDeal = () => {
   playersHand.push(shuffledDeck.pop());
 };
 
-const displayHand = () => {
+const displayHand = async () => {
   let dealer = colors.bold(`Dealer: `);
   let player = colors.bold(`You:    `);
   for (let i = 0; i < dealersHand.length; i++) {
@@ -121,24 +151,20 @@ const displayHand = () => {
   console.log("");
 };
 
-const checkPlayersHand = () => {
+const checkPlayersHand = async () => {
   const handNum = playersHand.map((card) => card.number);
   playersSum = handNum.reduce((a, b) => a + b);
   if (handNum.length === 2 && playersSum === 21) {
-    console.log(colors.rainbow("B L A C K J A C K"));
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-    checkResult();
+    await checkResult();
     return;
   }
   if (playersSum > 21 && handNum.includes(11)) {
     playersSum -= handNum.filter((num) => num === 11).length * 10;
-    return;
   }
   if (playersSum < 21) {
-    selectAction();
+    await selectAction();
   } else {
-    checkResult();
+    await checkResult();
   }
 };
 
@@ -199,27 +225,61 @@ const checkDealersHand = () => {
   }
 };
 
-const checkResult = () => {
+const checkResult = async () => {
   checkDealersHand();
+  const handNum = playersHand.map((card) => card.number);
+  playersSum = handNum.reduce((a, b) => a + b);
+  if (handNum.length === 2 && playersSum === 21) {
+    console.log(colors.rainbow("B L A C K J A C K"));
+    money += 2.5 * bet;
+    console.log(colors.bold.red("You Win!!"));
+    console.log(colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`));
+    console.log(
+      colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+    );
+    playersLose++;
+  }
   if (dealersSum <= 21 && playersSum <= 21) {
     if (dealersSum === playersSum) {
       console.log(colors.bold("Draw"));
+      money += bet;
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersDraw++;
     } else if (dealersSum > playersSum) {
       console.log(colors.bold.blue("You Lose"));
+      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersLose++;
     } else {
+      money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
+      console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersWin++;
     }
   } else {
     if (dealersSum > 21) {
       console.log(colors.bold.red("Dealer Burst"));
+      money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
+      console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersWin++;
     } else if (playersSum > 21) {
       console.log(colors.bold.blue("You Burst"));
       console.log(colors.bold.blue("You Lose"));
+      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+      console.log(
+        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+      );
       playersLose++;
     }
   }
@@ -234,10 +294,9 @@ const checkResult = () => {
   console.log(colors.bold("Please Enter to start next game"));
   readlineSync.question(colors.bold("(Enter)"));
   console.log("");
-  initGame();
 };
 
-const selectAction = () => {
+const selectAction = async () => {
   const action = readlineSync.question(
     colors.bold("Select Your Action. ") +
       colors.bold.green("Hit[h]") +
@@ -274,11 +333,13 @@ const selectAction = () => {
       );
       console.log("");
     }
-    displayHand();
+    await displayHand();
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    checkPlayersHand();
+    await checkPlayersHand();
   } else if (action === "d") {
+    money -= bet;
+    bet *= 2;
     playersHand.push(shuffledDeck.pop());
     if (
       playersHand[playersHand.length - 1].symbol === "♥" ||
@@ -304,27 +365,33 @@ const selectAction = () => {
       );
       console.log("");
     }
-    displayHand();
+    await displayHand();
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    checkPlayersHand();
+    await checkResult();
   } else if (action === "s") {
     checkResult();
   } else {
     console.log(
       colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
     );
-    selectAction();
+    await selectAction();
   }
 };
 
-const initGame = () => {
-  clearResult();
-  shuffleDeck();
-  firstDeal();
-  displayHand();
-  checkPlayersHand();
-  selectAction();
+const initGame = async () => {
+  await clearResult();
+  await shuffleDeck();
+  await setBet();
+  await firstDeal();
+  await displayHand();
+  await checkPlayersHand();
+  if (money === 0) {
+    console.log("You have no money.");
+    console.log("GAME OVER!");
+    return;
+  }
+  initGame();
 };
 
 // タイトルのアスキーアート
