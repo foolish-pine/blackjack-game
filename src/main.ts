@@ -2,6 +2,8 @@ import figlet from "figlet";
 import readlineSync from "readline-sync";
 import colors from "colors";
 
+import { setBet } from "./setBet";
+
 type Deck = {
   id: number;
   number: number;
@@ -72,34 +74,6 @@ const shuffleDeck = () => {
       shuffledDeck[randomIndex],
       shuffledDeck[i],
     ];
-  }
-};
-
-const setBet = async () => {
-  console.log(
-    colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-  );
-  const input = readlineSync.question(colors.bold("Set Your Bet: "));
-  if (isNaN(Number(input))) {
-    console.log("");
-    console.log(colors.bold("Please input number."));
-    setBet();
-  } else if (!Number.isInteger(Number(input)) || Number(input) <= 0) {
-    console.log("");
-    console.log(colors.bold("Please input a positive integer"));
-    setBet();
-  } else if (Number(input) > money) {
-    console.log("");
-    console.log(colors.bold("Please bet an amount of money you can."));
-    setBet();
-  } else {
-    bet = Number(input);
-    console.log(
-      colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
-    );
-    money -= bet;
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
   }
 };
 
@@ -366,7 +340,7 @@ const selectAction = async () => {
 const initGame = async () => {
   await clearResult();
   await shuffleDeck();
-  await setBet();
+  ({ money, bet } = await setBet(money));
   await firstDeal();
   await displayHand();
   await checkPlayersHand();
