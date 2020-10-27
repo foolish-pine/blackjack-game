@@ -2,15 +2,8 @@ import figlet from "figlet";
 import readlineSync from "readline-sync";
 import colors from "colors";
 
+import { Deck } from "./types";
 import { setBet } from "./setBet";
-
-type Deck = {
-  id: number;
-  number: number;
-  rank: number | string;
-  symbol: string;
-  isOpen: boolean;
-};
 
 const deck: Deck[] = [];
 let shuffledDeck: Deck[];
