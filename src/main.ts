@@ -58,7 +58,7 @@ const clearResult = async () => {
   playersSum = 0;
 };
 
-const shuffleDeck = () => {
+const shuffleDeck = async () => {
   shuffledDeck = [...deck];
   // デッキをシャッフルする;
   const cardNum = shuffledDeck.length;
@@ -69,6 +69,12 @@ const shuffleDeck = () => {
       shuffledDeck[i],
     ];
   }
+};
+
+const displayMoney = async (money: number) => {
+  console.log(
+    colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
+  );
 };
 
 const firstDeal = async () => {
@@ -83,6 +89,7 @@ const checkPlayersHand = async () => {
   const handNum = playersHand.map((card) => card.number);
   playersSum = handNum.reduce((a, b) => a + b);
   if (handNum.length === 2 && playersSum === 21) {
+    await checkDealersHand();
     await checkResult();
     return;
   }
@@ -92,11 +99,12 @@ const checkPlayersHand = async () => {
   if (playersSum < 21) {
     await selectAction();
   } else {
+    await checkDealersHand();
     await checkResult();
   }
 };
 
-const checkDealersHand = () => {
+const checkDealersHand = async () => {
   const handNum = dealersHand.map((card) => card.number);
   dealersSum = handNum.reduce((a, b) => a + b);
   if (handNum.length === 2) {
@@ -154,7 +162,6 @@ const checkDealersHand = () => {
 };
 
 const checkResult = async () => {
-  checkDealersHand();
   const handNum = playersHand.map((card) => card.number);
   playersSum = handNum.reduce((a, b) => a + b);
   if (handNum.length === 2 && playersSum === 21) {
@@ -162,30 +169,23 @@ const checkResult = async () => {
     money += 2.5 * bet;
     console.log(colors.bold.red("You Win!!"));
     console.log(colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`));
-    console.log(
-      colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-    );
+    await displayMoney(money);
+    return;
   }
   if (dealersSum <= 21 && playersSum <= 21) {
     if (dealersSum === playersSum) {
       console.log(colors.bold("Draw"));
       money += bet;
-      console.log(
-        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-      );
+      await displayMoney(money);
     } else if (dealersSum > playersSum) {
       console.log(colors.bold.blue("You Lose"));
       console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
-      console.log(
-        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-      );
+      await displayMoney(money);
     } else {
       money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
       console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
-      console.log(
-        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-      );
+      await displayMoney(money);
     }
   } else {
     if (dealersSum > 21) {
@@ -193,16 +193,12 @@ const checkResult = async () => {
       money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
       console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
-      console.log(
-        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-      );
+      await displayMoney(money);
     } else if (playersSum > 21) {
       console.log(colors.bold.blue("You Burst"));
       console.log(colors.bold.blue("You Lose"));
       console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
-      console.log(
-        colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-      );
+      await displayMoney(money);
     }
   }
   console.log(colors.bold("Please Enter to start next game"));
@@ -292,7 +288,8 @@ const selectAction = async () => {
     console.log("");
     await checkResult();
   } else if (action === "s") {
-    checkResult();
+    await checkDealersHand();
+    await checkResult();
   } else {
     console.log(
       colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
@@ -304,6 +301,7 @@ const selectAction = async () => {
 const initGame = async () => {
   await clearResult();
   await shuffleDeck();
+  await displayMoney(money);
   bet = await setBet(money);
   money -= bet;
   await firstDeal();
