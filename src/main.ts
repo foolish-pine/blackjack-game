@@ -250,7 +250,7 @@ const selectAction = async () => {
   } else if (action === "d") {
     if (money - bet < 0) {
       console.log(
-        colors.bold("You can not double down. You have enough money.")
+        colors.bold("You can't double down. You don't have enough money.")
       );
       selectAction();
       return;
