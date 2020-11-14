@@ -56,6 +56,7 @@ const clearResult = async () => {
   playersHand = [];
   dealersSum = 0;
   playersSum = 0;
+  bet = 0;
 };
 
 const shuffleDeck = async () => {
@@ -302,8 +303,19 @@ const initGame = async () => {
   await clearResult();
   await shuffleDeck();
   await displayMoney(money);
-  bet = await setBet(money);
-  money -= bet;
+  do {
+    const setBetResult = setBet(money);
+    if (typeof setBetResult === "string") {
+      console.log(colors.bold(setBetResult));
+    } else {
+      bet = setBetResult;
+      console.log(
+        colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
+      );
+      readlineSync.question(colors.bold("(Enter)"));
+      console.log("");
+    }
+  } while (bet === 0);
   await firstDeal();
   await displayHand(dealersHand, playersHand);
   await checkPlayersHand();
