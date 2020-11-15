@@ -30,12 +30,6 @@ describe("setBet", () => {
         "\nPlease input a positive integer."
       );
     });
-    it("負の小数が入力されたときにメッセージとともにエラーを返す", () => {
-      expect(() => setBet(1000, "-2.5")).to.throw(
-        Error,
-        "\nPlease input a positive integer."
-      );
-    });
     it("0が入力されたときにメッセージとともにエラーを返す", () => {
       expect(() => setBet(1000, "0")).to.throw(
         Error,
@@ -44,6 +38,12 @@ describe("setBet", () => {
     });
     it("負の整数が入力されたときにメッセージとともにエラーを返す", () => {
       expect(() => setBet(1000, "-100")).to.throw(
+        Error,
+        "\nPlease input a positive integer."
+      );
+    });
+    it("負の小数が入力されたときにメッセージとともにエラーを返す", () => {
+      expect(() => setBet(1000, "-2.5")).to.throw(
         Error,
         "\nPlease input a positive integer."
       );
