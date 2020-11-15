@@ -3,7 +3,7 @@ import readlineSync from "readline-sync";
 import colors from "colors";
 
 import { Card } from "./types/Card";
-import { setBet } from "./modules/setBet";
+import { checkBetFormat } from "./modules/checkBetFormat";
 import { checkPlayersHand } from "./modules/checkPlayersHand";
 
 const deck: Card[] = [];
@@ -78,11 +78,11 @@ const displayMoney = async (money: number) => {
   );
 };
 
-const displayBet = async () => {
+const setBet = async () => {
   do {
     try {
       const input = readlineSync.question(colors.bold("Set Your Bet: "));
-      bet = setBet(money, input);
+      bet = checkBetFormat(money, input);
       console.log(
         colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
       );
@@ -354,7 +354,7 @@ const initGame = async () => {
   await clearResult();
   await shuffleDeck();
   await displayMoney(money);
-  await displayBet();
+  await setBet();
   await firstDeal();
   await displayHand(dealersHand, playersHand);
   await progressGame();

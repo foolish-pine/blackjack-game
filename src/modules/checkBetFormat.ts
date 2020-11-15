@@ -1,4 +1,4 @@
-export const setBet = (money: number, input: string): number => {
+export const checkBetFormat = (money: number, input: string): number => {
   if (
     isNaN(Number(input)) ||
     !Number.isInteger(Number(input)) ||
