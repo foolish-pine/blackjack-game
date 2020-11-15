@@ -295,7 +295,7 @@ const selectAction = async () => {
     await displayHand(dealersHand, playersHand);
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    // await checkPlayersHand();
+    progressGame();
   } else if (action === "d") {
     if (money - bet < 0) {
       console.log(
