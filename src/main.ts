@@ -2,13 +2,14 @@ import figlet from "figlet";
 import readlineSync from "readline-sync";
 import colors from "colors";
 
-import { Deck } from "./types/Deck";
+import { Card } from "./types/Card";
 import { setBet } from "./modules/setBet";
+import { checkPlayersHand } from "./modules/checkPlayersHand";
 
-const deck: Deck[] = [];
-let shuffledDeck: Deck[];
-let dealersHand: Deck[] = [];
-let playersHand: Deck[] = [];
+const deck: Card[] = [];
+let shuffledDeck: Card[];
+let dealersHand: Card[] = [];
+let playersHand: Card[] = [];
 let dealersSum = 0;
 let playersSum = 0;
 let money = 1000;
@@ -77,6 +78,22 @@ const displayMoney = async (money: number) => {
   );
 };
 
+const displayBet = async () => {
+  do {
+    try {
+      const input = readlineSync.question(colors.bold("Set Your Bet: "));
+      bet = setBet(money, input);
+      console.log(
+        colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
+      );
+      readlineSync.question(colors.bold("(Enter)"));
+      console.log("");
+    } catch (error) {
+      console.log(error.message);
+    }
+  } while (bet === 0);
+};
+
 const firstDeal = async () => {
   dealersHand.push(shuffledDeck.pop());
   dealersHand.push(shuffledDeck.pop());
@@ -86,8 +103,8 @@ const firstDeal = async () => {
 };
 
 const displayHand = async (
-  dealersHand: Deck[],
-  playersHand: Deck[]
+  dealersHand: Card[],
+  playersHand: Card[]
 ): Promise<void> => {
   let dealer = colors.bold(`Dealer: `);
   let player = colors.bold(`You:    `);
@@ -125,24 +142,39 @@ const displayHand = async (
   console.log("");
 };
 
-const checkPlayersHand = async () => {
-  const handNum = playersHand.map((card) => card.number);
-  playersSum = handNum.reduce((a, b) => a + b);
-  if (handNum.length === 2 && playersSum === 21) {
-    await checkDealersHand();
-    await checkResult();
-    return;
-  }
-  if (playersSum > 21 && handNum.includes(11)) {
-    playersSum -= handNum.filter((num) => num === 11).length * 10;
-  }
-  if (playersSum < 21) {
-    await selectAction();
-  } else {
-    await checkDealersHand();
-    await checkResult();
+const progressGame = async () => {
+  const playersHandNum = playersHand.map((card) => card.number);
+  switch (await checkPlayersHand(playersHandNum)) {
+    case "blackjack":
+      await checkDealersHand();
+      await checkResult();
+    case "selectable":
+      await selectAction();
+    case "burst":
+      await checkDealersHand();
+      await checkResult();
   }
 };
+
+// const checkPlayersHand = async (
+//   playersHandNum: number[],
+//   playersSum: number
+// ) => {
+//   if (playersHandNum.length === 2 && playersSum === 21) {
+//     await checkDealersHand();
+//     await checkResult();
+//   } else {
+//     if (playersSum > 21 && playersHandNum.includes(11)) {
+//       playersSum -= playersHandNum.filter((num) => num === 11).length * 10;
+//     }
+//     if (playersSum < 21) {
+//       await selectAction();
+//     } else {
+//       await checkDealersHand();
+//       await checkResult();
+//     }
+//   }
+// };
 
 const checkDealersHand = async () => {
   const handNum = dealersHand.map((card) => card.number);
@@ -286,7 +318,7 @@ const selectAction = async () => {
     await displayHand(dealersHand, playersHand);
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    await checkPlayersHand();
+    // await checkPlayersHand();
   } else if (action === "d") {
     if (money - bet < 0) {
       console.log(
@@ -342,24 +374,12 @@ const initGame = async () => {
   await clearResult();
   await shuffleDeck();
   await displayMoney(money);
-
-  do {
-    try {
-      const input = readlineSync.question(colors.bold("Set Your Bet: "));
-      bet = setBet(money, input);
-      console.log(
-        colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
-      );
-      readlineSync.question(colors.bold("(Enter)"));
-      console.log("");
-    } catch (error) {
-      console.log(error.message);
-    }
-  } while (bet === 0);
-
+  await displayBet();
   await firstDeal();
   await displayHand(dealersHand, playersHand);
-  await checkPlayersHand();
+  await progressGame();
+
+  // await checkPlayersHand();
   if (money === 0) {
     console.log(colors.bold("You have no money."));
     console.log(colors.bold("GAME OVER!"));

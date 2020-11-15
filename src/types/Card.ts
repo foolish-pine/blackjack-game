@@ -1,4 +1,4 @@
-export type Deck = {
+export type Card = {
   id: number;
   number: number;
   rank: number | string;
