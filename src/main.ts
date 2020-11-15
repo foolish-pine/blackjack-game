@@ -145,14 +145,11 @@ const displayHand = async (
 const progressGame = async () => {
   const playersHandNum = playersHand.map((card) => card.number);
   switch (checkPlayersHand(playersHandNum)) {
-    case "blackjack":
+    case "result":
       await checkDealersHand();
       await checkResult();
     case "selectable":
       selectAction();
-    case "burst":
-      await checkDealersHand();
-      await checkResult();
   }
 };
 
