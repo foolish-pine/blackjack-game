@@ -303,19 +303,21 @@ const initGame = async () => {
   await clearResult();
   await shuffleDeck();
   await displayMoney(money);
+
   do {
-    const setBetResult = setBet(money);
-    if (typeof setBetResult === "string") {
-      console.log(colors.bold(setBetResult));
-    } else {
-      bet = setBetResult;
+    try {
+      const input = readlineSync.question(colors.bold("Set Your Bet: "));
+      bet = setBet(money, input);
       console.log(
         colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
       );
       readlineSync.question(colors.bold("(Enter)"));
       console.log("");
+    } catch (error) {
+      console.log(error.message);
     }
   } while (bet === 0);
+
   await firstDeal();
   await displayHand(dealersHand, playersHand);
   await checkPlayersHand();
