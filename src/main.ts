@@ -284,6 +284,10 @@ const checkDealersHand = async () => {
   return dealersSum;
 };
 
+const initCreateDeck = async () => {
+  deck = await createDeck(deck);
+};
+
 const initGame = async () => {
   ({
     dealersHand,
@@ -322,5 +326,5 @@ console.log(
 
 console.log(colors.bold("Please Enter to Start"));
 readlineSync.question();
-deck = createDeck();
+initCreateDeck();
 initGame();
