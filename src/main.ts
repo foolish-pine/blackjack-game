@@ -6,6 +6,8 @@ import { Card } from "./types/Card";
 import { calcSum } from "./modules/calcSum";
 import { clearResult } from "./modules/clearResult";
 import { createDeck } from "./modules/createDeck";
+import { checkResult } from "./modules/checkResult";
+import { displayDealersSecondCard } from "./modules/displayDealersSecondCard";
 import { displayHand } from "./modules/displayHand";
 import { displayMoney } from "./modules/displayMoney";
 import { firstDeal } from "./modules/firstDeal";
@@ -48,76 +50,6 @@ const displayPlayersNewCard = async () => {
   }
 };
 
-const displayDealersSecondCard = async () => {
-  // ディーラーの2枚目のハンドをオープンにして表示する
-  dealersHand[1].isOpen = true;
-  let dealer = colors.bold("Dealer's second card: ");
-  if (dealersHand[1].symbol === "♥" || dealersHand[1].symbol === "♦") {
-    dealer += colors.red.bgWhite(
-      ` ${dealersHand[1].symbol} ${dealersHand[1].rank} `
-    );
-  } else {
-    dealer += colors.black.bgWhite(
-      ` ${dealersHand[1].symbol} ${dealersHand[1].rank} `
-    );
-  }
-  console.log(dealer);
-  console.log("");
-  // ディーラーとプレイヤーのハンドを表示する
-  displayHand(dealersHand, playersHand);
-};
-
-const checkResult = async (
-  playersHandNumLength: number,
-  playersSum: number,
-  dealersSum: number
-) => {
-  if (dealersSum > 21) {
-    console.log(colors.bold.red("Dealer Burst"));
-    money += 2 * bet;
-    console.log(colors.bold.red("You Win!!"));
-    console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
-    await displayMoney(money);
-  } else if (playersSum > 21) {
-    console.log(colors.bold.blue("You Burst"));
-    console.log(colors.bold.blue("You Lose"));
-    console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
-    await displayMoney(money);
-  }
-  if (playersHandNumLength === 2 && playersSum === 21) {
-    console.log(colors.rainbow("B L A C K J A C K"));
-    money += 2.5 * bet;
-    console.log(colors.bold.red("You Win!!"));
-    console.log(colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`));
-    await displayMoney(money);
-  }
-  if (dealersSum <= 21 && playersSum <= 21) {
-    if (dealersSum === playersSum) {
-      console.log(colors.bold("Draw"));
-      money += bet;
-      await displayMoney(money);
-    } else if (dealersSum > playersSum) {
-      console.log(colors.bold.blue("You Lose"));
-      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
-      await displayMoney(money);
-    } else {
-      money += 2 * bet;
-      console.log(colors.bold.red("You Win!!"));
-      console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
-      await displayMoney(money);
-    }
-  }
-  if (money === 0) {
-    console.log(colors.bold("You have no money."));
-    console.log(colors.bold("GAME OVER!"));
-    return;
-  } else {
-    console.log(colors.bold("Please Enter to start next game"));
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-  }
-};
-
 const selectAction = async () => {
   const playersHandNum = playersHand.map((card) => card.number);
   const playersHandNumLength = playersHandNum.length;
@@ -151,12 +83,12 @@ const selectAction = async () => {
     await displayPlayersNewCard();
     await displayHand(dealersHand, playersHand);
     dealersSum = await checkDealersHand();
-    await displayDealersSecondCard();
-    await checkResult(playersHandNumLength, playersSum, dealersSum);
+    await displayDealersSecondCard(dealersHand);
+    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
   } else if (action === "s") {
-    await displayDealersSecondCard();
+    await displayDealersSecondCard(dealersHand);
     dealersSum = await checkDealersHand();
-    await checkResult(playersHandNumLength, playersSum, dealersSum);
+    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
   } else {
     console.log(
       colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
@@ -170,12 +102,14 @@ const checkPlayersHand = async () => {
   const playersHandNumLength = playersHandNum.length;
   playersSum = await calcSum(playersHandNum);
   if (playersSum > 21) {
-    await displayDealersSecondCard();
-    await checkResult(playersHandNumLength, playersSum, dealersSum);
+    await displayDealersSecondCard(dealersHand);
+    const dealersHandNum = dealersHand.map((card) => card.number);
+    dealersSum = await calcSum(dealersHandNum);
+    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
   } else if (playersSum === 21) {
-    await displayDealersSecondCard();
+    await displayDealersSecondCard(dealersHand);
     dealersSum = await checkDealersHand();
-    await checkResult(playersHandNumLength, playersSum, dealersSum);
+    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
   } else {
     await selectAction();
   }
@@ -239,7 +173,7 @@ const initGame = async () => {
     bet
   ));
   shuffledDeck = await shuffleDeck(deck);
-  console.log(await displayMoney(money));
+  await displayMoney(money);
   ({ bet, money } = await setBet(bet, money));
   ({ shuffledDeck, dealersHand, playersHand } = await firstDeal(
     shuffledDeck,
