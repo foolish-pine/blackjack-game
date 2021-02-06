@@ -2,79 +2,24 @@ import figlet from "figlet";
 import readlineSync from "readline-sync";
 import colors from "colors";
 
-type Deck = {
-  id: number;
-  number: number;
-  rank: number | string;
-  symbol: string;
-  isOpen: boolean;
-};
+import { Card } from "./types/Card";
+import { calcSum } from "./modules/calcSum";
+import { clearResult } from "./modules/clearResult";
+import { createDeck } from "./modules/createDeck";
+import { displayMoney } from "./modules/displayMoney";
+import { setBet } from "./modules/setBet";
+import { shuffleDeck } from "./modules/shuffleDeck";
 
-const deck: Deck[] = [];
-let shuffledDeck: Deck[];
-let dealersHand: Deck[] = [];
-let playersHand: Deck[] = [];
+let deck: Card[] = [];
+let shuffledDeck: Card[];
+let dealersHand: Card[] = [];
+let playersHand: Card[] = [];
 let dealersSum = 0;
 let playersSum = 0;
-let playersWin = 0;
-let playersLose = 0;
-let playersDraw = 0;
+let money = 1000;
+let bet = 0;
 
-let id = 0;
-const symbols = ["♥", "♦", "♣", "♠"];
-for (let i = 1; i < 14; i++) {
-  for (let j = 0; j < symbols.length; j++) {
-    let rank: string | number;
-    if (i === 1) {
-      rank = "A";
-    } else if (i === 11) {
-      rank = "J";
-    } else if (i === 12) {
-      rank = "Q";
-    } else if (i === 13) {
-      rank = "K";
-    } else {
-      rank = i;
-    }
-    let number = i;
-    if (i === 1) {
-      number = 11;
-    } else if (i > 10) {
-      number = 10;
-    }
-    const card = {
-      id: id,
-      number: number,
-      rank: rank,
-      symbol: symbols[j],
-      isOpen: true,
-    };
-    deck.push(card);
-    id++;
-  }
-}
-
-const createDeck = () => {
-  shuffledDeck = [...deck];
-  // デッキをシャッフルする;
-  const cardNum = shuffledDeck.length;
-  for (let i = cardNum - 1; i >= 0; i--) {
-    const randomIndex = Math.floor(Math.random() * (i + 1));
-    [shuffledDeck[i], shuffledDeck[randomIndex]] = [
-      shuffledDeck[randomIndex],
-      shuffledDeck[i],
-    ];
-  }
-};
-
-const clearResult = () => {
-  dealersHand = [];
-  playersHand = [];
-  dealersSum = 0;
-  playersSum = 0;
-};
-
-const firstDeal = () => {
+const firstDeal = async () => {
   dealersHand.push(shuffledDeck.pop());
   dealersHand.push(shuffledDeck.pop());
   dealersHand[1].isOpen = false;
@@ -82,7 +27,37 @@ const firstDeal = () => {
   playersHand.push(shuffledDeck.pop());
 };
 
-const displayHand = () => {
+const displayPlayersNewCard = async () => {
+  if (
+    playersHand[playersHand.length - 1].symbol === "♥" ||
+    playersHand[playersHand.length - 1].symbol === "♦"
+  ) {
+    console.log(
+      colors.bold("Your new card: ") +
+        colors.red.bgWhite(
+          ` ${playersHand[playersHand.length - 1].symbol} ${
+            playersHand[playersHand.length - 1].rank
+          } `
+        )
+    );
+    console.log("");
+  } else {
+    console.log(
+      colors.bold("Your new card: ") +
+        colors.black.bgWhite(
+          ` ${playersHand[playersHand.length - 1].symbol} ${
+            playersHand[playersHand.length - 1].rank
+          } `
+        )
+    );
+    console.log("");
+  }
+};
+
+const displayHand = async (
+  dealersHand: Card[],
+  playersHand: Card[]
+): Promise<void> => {
   let dealer = colors.bold(`Dealer: `);
   let player = colors.bold(`You:    `);
   for (let i = 0; i < dealersHand.length; i++) {
@@ -117,60 +92,154 @@ const displayHand = () => {
   console.log("");
   console.log(player);
   console.log("");
+  readlineSync.question(colors.bold("(Enter)"));
+  console.log("");
 };
 
-const checkPlayersHand = () => {
-  const handNum = playersHand.map((card) => card.number);
-  playersSum = handNum.reduce((a, b) => a + b);
-  if (handNum.length === 2 && playersSum === 21) {
-    console.log(colors.rainbow("B L A C K J A C K"));
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-    checkResult();
-    return;
-  }
-  if (playersSum > 21 && handNum.includes(11)) {
-    playersSum -= handNum.filter((num) => num === 11).length * 10;
-    return;
-  }
-  if (playersSum < 21) {
-    selectAction();
+const displayDealersSecondCard = async () => {
+  // ディーラーの2枚目のハンドをオープンにして表示する
+  dealersHand[1].isOpen = true;
+  let dealer = colors.bold("Dealer's second card: ");
+  if (dealersHand[1].symbol === "♥" || dealersHand[1].symbol === "♦") {
+    dealer += colors.red.bgWhite(
+      ` ${dealersHand[1].symbol} ${dealersHand[1].rank} `
+    );
   } else {
-    checkResult();
+    dealer += colors.black.bgWhite(
+      ` ${dealersHand[1].symbol} ${dealersHand[1].rank} `
+    );
+  }
+  console.log(dealer);
+  console.log("");
+  // ディーラーとプレイヤーのハンドを表示する
+  displayHand(dealersHand, playersHand);
+};
+
+const checkResult = async (
+  playersHandNumLength: number,
+  playersSum: number,
+  dealersSum: number
+) => {
+  if (dealersSum > 21) {
+    console.log(colors.bold.red("Dealer Burst"));
+    money += 2 * bet;
+    console.log(colors.bold.red("You Win!!"));
+    console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+    await displayMoney(money);
+  } else if (playersSum > 21) {
+    console.log(colors.bold.blue("You Burst"));
+    console.log(colors.bold.blue("You Lose"));
+    console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+    await displayMoney(money);
+  }
+  if (playersHandNumLength === 2 && playersSum === 21) {
+    console.log(colors.rainbow("B L A C K J A C K"));
+    money += 2.5 * bet;
+    console.log(colors.bold.red("You Win!!"));
+    console.log(colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`));
+    await displayMoney(money);
+  }
+  if (dealersSum <= 21 && playersSum <= 21) {
+    if (dealersSum === playersSum) {
+      console.log(colors.bold("Draw"));
+      money += bet;
+      await displayMoney(money);
+    } else if (dealersSum > playersSum) {
+      console.log(colors.bold.blue("You Lose"));
+      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+      await displayMoney(money);
+    } else {
+      money += 2 * bet;
+      console.log(colors.bold.red("You Win!!"));
+      console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      await displayMoney(money);
+    }
+  }
+  if (money === 0) {
+    console.log(colors.bold("You have no money."));
+    console.log(colors.bold("GAME OVER!"));
+    return;
+  } else {
+    console.log(colors.bold("Please Enter to start next game"));
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
   }
 };
 
-const checkDealersHand = () => {
-  const handNum = dealersHand.map((card) => card.number);
-  dealersSum = handNum.reduce((a, b) => a + b);
-  if (handNum.length === 2) {
-    dealersHand[1].isOpen = true;
-    let dealer = colors.bold("Dealer's second card: ");
-    if (dealersHand[1].symbol === "♥" || dealersHand[1].symbol === "♦") {
-      dealer += colors.red.bgWhite(
-        ` ${dealersHand[1].symbol} ${dealersHand[1].rank} `
+const selectAction = async () => {
+  const playersHandNum = playersHand.map((card) => card.number);
+  const playersHandNumLength = playersHandNum.length;
+  const action = readlineSync.question(
+    colors.bold("Select Your Action. ") +
+      colors.bold.green("Hit[h]") +
+      colors.bold(" / ") +
+      colors.bold.cyan("DoubleDown[d]") +
+      colors.bold(" / ") +
+      colors.bold.yellow("Stand[s]") +
+      colors.bold(": ")
+  );
+  console.log("");
+  if (action === "h") {
+    playersHand.push(shuffledDeck.pop());
+    await displayPlayersNewCard();
+    await displayHand(dealersHand, playersHand);
+    await checkPlayersHand();
+  } else if (action === "d") {
+    if (money - bet < 0) {
+      console.log(
+        colors.bold("You can't double down. You don't have enough money.")
       );
-    } else {
-      dealer += colors.black.bgWhite(
-        ` ${dealersHand[1].symbol} ${dealersHand[1].rank} `
-      );
+      selectAction();
+      return;
     }
-    console.log(dealer);
-    console.log("");
-    displayHand();
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-    if (playersSum > 21) return;
+    money -= bet;
+    bet *= 2;
+    playersHand.push(shuffledDeck.pop());
+    console.log(colors.bold.cyan("You doubled down."));
+    await displayPlayersNewCard();
+    await displayHand(dealersHand, playersHand);
+    dealersSum = await checkDealersHand();
+    await displayDealersSecondCard();
+    await checkResult(playersHandNumLength, playersSum, dealersSum);
+  } else if (action === "s") {
+    await displayDealersSecondCard();
+    dealersSum = await checkDealersHand();
+    await checkResult(playersHandNumLength, playersSum, dealersSum);
+  } else {
+    console.log(
+      colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
+    );
+    await selectAction();
   }
-  if (dealersSum > 21 && handNum.includes(11)) {
-    dealersSum -= handNum.filter((num) => num === 11).length * 10;
-  } else if (dealersSum > 21 && !handNum.includes(11)) {
-    return;
+};
+
+const checkPlayersHand = async () => {
+  const playersHandNum = playersHand.map((card) => card.number);
+  const playersHandNumLength = playersHandNum.length;
+  playersSum = await calcSum(playersHandNum);
+  if (playersSum > 21) {
+    await displayDealersSecondCard();
+    await checkResult(playersHandNumLength, playersSum, dealersSum);
+  } else if (playersSum === 21) {
+    await displayDealersSecondCard();
+    dealersSum = await checkDealersHand();
+    await checkResult(playersHandNumLength, playersSum, dealersSum);
+  } else {
+    await selectAction();
   }
-  if (dealersSum > 17 || (dealersSum === 17 && !handNum.includes(11))) {
-    return;
-  } else if ((dealersSum === 17 && handNum.includes(11)) || dealersSum < 17) {
+};
+
+const checkDealersHand = async () => {
+  let dealersHandNum = dealersHand.map((card) => card.number);
+  let dealersSum = await calcSum(dealersHandNum);
+  while (
+    (dealersSum === 17 && dealersHandNum.includes(11)) ||
+    dealersSum < 17
+  ) {
+    // ディーラーのハンドの合計が17かつハンドに11が含まれるとき、または17未満のとき、条件を満たさなくなるまで以下を繰り返す
+    // ディーラーはヒットする
     dealersHand.push(shuffledDeck.pop());
+    // ディーラーが新しく引いたカードを表示する
     let dealer = colors.bold("Dealer's new card: ");
     if (
       dealersHand[dealersHand.length - 1].symbol === "♥" ||
@@ -190,139 +259,40 @@ const checkDealersHand = () => {
     }
     console.log(dealer);
     console.log("");
-    displayHand();
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-    checkDealersHand();
+    displayHand(dealersHand, playersHand);
+    dealersHandNum = dealersHand.map((card) => card.number);
+    dealersSum = await calcSum(dealersHandNum);
   }
+  return dealersSum;
 };
 
-const checkResult = () => {
-  checkDealersHand();
-  if (dealersSum <= 21 && playersSum <= 21) {
-    if (dealersSum === playersSum) {
-      console.log(colors.bold("Draw"));
-      playersDraw++;
-    } else if (dealersSum > playersSum) {
-      console.log(colors.bold.blue("You Lose"));
-      playersLose++;
-    } else {
-      console.log(colors.bold.red("You Win!!"));
-      playersWin++;
-    }
-  } else {
-    if (dealersSum > 21) {
-      console.log(colors.bold.red("Dealer Burst"));
-      console.log(colors.bold.red("You Win!!"));
-      playersWin++;
-    } else if (playersSum > 21) {
-      console.log(colors.bold.blue("You Burst"));
-      console.log(colors.bold.blue("You Lose"));
-      playersLose++;
-    }
-  }
-  console.log(
-    colors.bold("Your score: ") +
-      colors.bold.red(`${playersWin} Win`) +
-      colors.bold(" / ") +
-      colors.bold.blue(`${playersLose} Lose`) +
-      colors.bold(" / ") +
-      colors.bold(`${playersDraw} Draw`)
-  );
-  console.log(colors.bold("Please Enter to start next game"));
-  readlineSync.question(colors.bold("(Enter)"));
-  console.log("");
-  startGame();
+const initCreateDeck = async () => {
+  deck = await createDeck(deck);
 };
 
-const selectAction = () => {
-  const action = readlineSync.question(
-    colors.bold("Select Your Action. ") +
-      colors.bold.green("Hit[h]") +
-      colors.bold(" / ") +
-      colors.bold.cyan("DoubleDown[d]") +
-      colors.bold(" / ") +
-      colors.bold.yellow("Stand[s]") +
-      colors.bold(": ")
-  );
-  console.log("");
-  if (action === "h") {
-    playersHand.push(shuffledDeck.pop());
-    if (
-      playersHand[playersHand.length - 1].symbol === "♥" ||
-      playersHand[playersHand.length - 1].symbol === "♦"
-    ) {
-      console.log(
-        colors.bold("Your new card: ") +
-          colors.red.bgWhite(
-            ` ${playersHand[playersHand.length - 1].symbol} ${
-              playersHand[playersHand.length - 1].rank
-            } `
-          )
-      );
-      console.log("");
-    } else {
-      console.log(
-        colors.bold("Your new card: ") +
-          colors.black.bgWhite(
-            ` ${playersHand[playersHand.length - 1].symbol} ${
-              playersHand[playersHand.length - 1].rank
-            } `
-          )
-      );
-      console.log("");
-    }
-    displayHand();
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-    checkPlayersHand();
-  } else if (action === "d") {
-    playersHand.push(shuffledDeck.pop());
-    if (
-      playersHand[playersHand.length - 1].symbol === "♥" ||
-      playersHand[playersHand.length - 1].symbol === "♦"
-    ) {
-      console.log(
-        colors.bold("Your new card: ") +
-          colors.red.bgWhite(
-            ` ${playersHand[playersHand.length - 1].symbol} ${
-              playersHand[playersHand.length - 1].rank
-            } `
-          )
-      );
-      console.log("");
-    } else {
-      console.log(
-        colors.bold("Your new card: ") +
-          colors.black.bgWhite(
-            ` ${playersHand[playersHand.length - 1].symbol} ${
-              playersHand[playersHand.length - 1].rank
-            } `
-          )
-      );
-      console.log("");
-    }
-    displayHand();
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-    checkPlayersHand();
-  } else if (action === "s") {
-    checkResult();
-  } else {
-    console.log(
-      colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
-    );
-    selectAction();
-  }
-};
-
-const startGame = () => {
-  clearResult();
-  createDeck();
-  firstDeal();
-  displayHand();
-  checkPlayersHand();
-  selectAction();
+const initGame = async () => {
+  ({
+    dealersHand,
+    playersHand,
+    dealersSum,
+    playersSum,
+    money,
+    bet,
+  } = await clearResult(
+    dealersHand,
+    playersHand,
+    dealersSum,
+    playersSum,
+    money,
+    bet
+  ));
+  await shuffleDeck(deck);
+  console.log(await displayMoney(money));
+  ({ bet, money } = await setBet(bet, money));
+  // await firstDeal();
+  // await displayHand(dealersHand, playersHand);
+  // await checkPlayersHand();
+  // initGame();
 };
 
 // タイトルのアスキーアート
@@ -338,4 +308,5 @@ console.log(
 
 console.log(colors.bold("Please Enter to Start"));
 readlineSync.question();
-startGame();
+initCreateDeck();
+initGame();
