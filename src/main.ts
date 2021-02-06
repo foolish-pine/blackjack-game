@@ -238,10 +238,10 @@ const initGame = async () => {
     money,
     bet
   ));
-  await shuffleDeck(deck);
+  shuffledDeck = await shuffleDeck(deck);
   console.log(await displayMoney(money));
   ({ bet, money } = await setBet(bet, money));
-  ({ dealersHand, playersHand } = await firstDeal(
+  ({ shuffledDeck, dealersHand, playersHand } = await firstDeal(
     shuffledDeck,
     dealersHand,
     playersHand
