@@ -1,7 +1,6 @@
 import { Card } from "./../types/Card";
 
-export const createDeck = (): Card[] => {
-  const deck: Card[] = [];
+export const createDeck = async (deck: Card[]): Promise<Card[]> => {
   let id = 0;
   const symbols = ["♥", "♦", "♣", "♠"];
   for (let i = 1; i < 14; i++) {
