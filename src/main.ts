@@ -4,10 +4,10 @@ import colors from "colors";
 
 import { Card } from "./types/Card";
 import { calcSum } from "./modules/calcSum";
-import { checkBetFormat } from "./modules/checkBetFormat";
 import { clearResult } from "./modules/clearResult";
 import { createDeck } from "./modules/createDeck";
 import { displayMoney } from "./modules/displayMoney";
+import { setBet } from "./modules/setBet";
 import { shuffleDeck } from "./modules/shuffleDeck";
 
 let deck: Card[] = [];
@@ -18,24 +18,6 @@ let dealersSum = 0;
 let playersSum = 0;
 let money = 1000;
 let bet = 0;
-
-const setBet = async () => {
-  do {
-    const input = readlineSync.question(colors.bold("Set Your Bet: "));
-    try {
-      bet = await checkBetFormat(money, input);
-    } catch (e) {
-      console.log(e.message);
-    }
-    money -= bet;
-    console.log("");
-    console.log(
-      colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
-    );
-    readlineSync.question(colors.bold("(Enter)"));
-    console.log("");
-  } while (bet === 0);
-};
 
 const firstDeal = async () => {
   dealersHand.push(shuffledDeck.pop());
@@ -306,7 +288,7 @@ const initGame = async () => {
   ));
   await shuffleDeck(deck);
   console.log(await displayMoney(money));
-  // await setBet();
+  bet = await setBet(money, bet);
   // await firstDeal();
   // await displayHand(dealersHand, playersHand);
   // await checkPlayersHand();
