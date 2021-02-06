@@ -3,6 +3,7 @@ import readlineSync from "readline-sync";
 import colors from "colors";
 
 import { Card } from "./types/Card";
+import { shuffleDeck } from "./modules/shuffleDeck";
 import { checkBetFormat } from "./modules/checkBetFormat";
 import { calcSum } from "./modules/calcSum";
 
@@ -39,9 +40,9 @@ const createDeck = () => {
         number = 10;
       }
       const card = {
-        id: id,
-        number: number,
-        rank: rank,
+        id,
+        number,
+        rank,
         symbol: symbols[j],
         isOpen: true,
       };
@@ -57,19 +58,6 @@ const clearResult = async () => {
   dealersSum = 0;
   playersSum = 0;
   bet = 0;
-};
-
-const shuffleDeck = async () => {
-  shuffledDeck = [...deck];
-  // デッキをシャッフルする;
-  const cardNum = shuffledDeck.length;
-  for (let i = cardNum - 1; i >= 0; i--) {
-    const randomIndex = Math.floor(Math.random() * (i + 1));
-    [shuffledDeck[i], shuffledDeck[randomIndex]] = [
-      shuffledDeck[randomIndex],
-      shuffledDeck[i],
-    ];
-  }
 };
 
 const displayMoney = async (money: number) => {
@@ -344,14 +332,14 @@ const checkDealersHand = async () => {
 };
 
 const initGame = async () => {
-  await clearResult();
-  await shuffleDeck();
-  await displayMoney(money);
-  await setBet();
-  await firstDeal();
-  await displayHand(dealersHand, playersHand);
-  await checkPlayersHand();
-  initGame();
+  // await clearResult();
+  await shuffleDeck(deck);
+  // await displayMoney(money);
+  // await setBet();
+  // await firstDeal();
+  // await displayHand(dealersHand, playersHand);
+  // await checkPlayersHand();
+  // initGame();
 };
 
 // タイトルのアスキーアート
