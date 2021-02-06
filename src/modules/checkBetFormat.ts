@@ -1,4 +1,7 @@
-export const checkBetFormat = (money: number, input: string): number => {
+export const checkBetFormat = async (
+  money: number,
+  input: string
+): Promise<number> => {
   if (
     isNaN(Number(input)) ||
     !Number.isInteger(Number(input)) ||

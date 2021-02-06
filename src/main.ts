@@ -21,19 +21,19 @@ let bet = 0;
 
 const setBet = async () => {
   do {
+    const input = readlineSync.question(colors.bold("Set Your Bet: "));
     try {
-      const input = readlineSync.question(colors.bold("Set Your Bet: "));
-      bet = checkBetFormat(money, input);
-      money -= bet;
-      console.log("");
-      console.log(
-        colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
-      );
-      readlineSync.question(colors.bold("(Enter)"));
-      console.log("");
-    } catch (error) {
-      console.log(error.message);
+      bet = await checkBetFormat(money, input);
+    } catch (e) {
+      console.log(e.message);
     }
+    money -= bet;
+    console.log("");
+    console.log(
+      colors.bold.yellow("Your bet: ") + colors.bold.yellow(`$${bet}`)
+    );
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
   } while (bet === 0);
 };
 
