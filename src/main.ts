@@ -3,6 +3,7 @@ import readlineSync from "readline-sync";
 import colors from "colors";
 
 import { Card } from "./types/Card";
+import { clearResult } from "./modules/clearResult";
 import { shuffleDeck } from "./modules/shuffleDeck";
 import { checkBetFormat } from "./modules/checkBetFormat";
 import { calcSum } from "./modules/calcSum";
@@ -50,14 +51,6 @@ const createDeck = () => {
       id++;
     }
   }
-};
-
-const clearResult = async () => {
-  dealersHand = [];
-  playersHand = [];
-  dealersSum = 0;
-  playersSum = 0;
-  bet = 0;
 };
 
 const displayMoney = async (money: number) => {
@@ -332,7 +325,21 @@ const checkDealersHand = async () => {
 };
 
 const initGame = async () => {
-  // await clearResult();
+  ({
+    dealersHand,
+    playersHand,
+    dealersSum,
+    playersSum,
+    money,
+    bet,
+  } = await clearResult(
+    dealersHand,
+    playersHand,
+    dealersSum,
+    playersSum,
+    money,
+    bet
+  ));
   await shuffleDeck(deck);
   // await displayMoney(money);
   // await setBet();
