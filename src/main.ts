@@ -7,6 +7,7 @@ import { calcSum } from "./modules/calcSum";
 import { clearResult } from "./modules/clearResult";
 import { createDeck } from "./modules/createDeck";
 import { displayMoney } from "./modules/displayMoney";
+import { firstDeal } from "./modules/firstDeal";
 import { setBet } from "./modules/setBet";
 import { shuffleDeck } from "./modules/shuffleDeck";
 
@@ -18,14 +19,6 @@ let dealersSum = 0;
 let playersSum = 0;
 let money = 1000;
 let bet = 0;
-
-const firstDeal = async () => {
-  dealersHand.push(shuffledDeck.pop());
-  dealersHand.push(shuffledDeck.pop());
-  dealersHand[1].isOpen = false;
-  playersHand.push(shuffledDeck.pop());
-  playersHand.push(shuffledDeck.pop());
-};
 
 const displayPlayersNewCard = async () => {
   if (
@@ -289,7 +282,11 @@ const initGame = async () => {
   await shuffleDeck(deck);
   console.log(await displayMoney(money));
   ({ bet, money } = await setBet(bet, money));
-  // await firstDeal();
+  ({ dealersHand, playersHand } = await firstDeal(
+    shuffledDeck,
+    dealersHand,
+    playersHand
+  ));
   // await displayHand(dealersHand, playersHand);
   // await checkPlayersHand();
   // initGame();
