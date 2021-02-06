@@ -1,6 +1,7 @@
 import { describe, it } from "mocha";
-import { clearResult } from "../src/modules/clearResult";
 import { expect } from "chai";
+
+import { clearResult } from "../src/modules/clearResult";
 
 describe("clearResult", () => {
   describe("正常系:", () => {
