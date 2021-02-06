@@ -3,11 +3,12 @@ import readlineSync from "readline-sync";
 import colors from "colors";
 
 import { Card } from "./types/Card";
-import { createDeck } from "./modules/createDeck";
-import { clearResult } from "./modules/clearResult";
-import { shuffleDeck } from "./modules/shuffleDeck";
-import { checkBetFormat } from "./modules/checkBetFormat";
 import { calcSum } from "./modules/calcSum";
+import { checkBetFormat } from "./modules/checkBetFormat";
+import { clearResult } from "./modules/clearResult";
+import { createDeck } from "./modules/createDeck";
+import { displayMoney } from "./modules/displayMoney";
+import { shuffleDeck } from "./modules/shuffleDeck";
 
 let deck: Card[] = [];
 let shuffledDeck: Card[];
@@ -17,12 +18,6 @@ let dealersSum = 0;
 let playersSum = 0;
 let money = 1000;
 let bet = 0;
-
-const displayMoney = async (money: number) => {
-  console.log(
-    colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${money}`)
-  );
-};
 
 const setBet = async () => {
   do {
@@ -306,7 +301,7 @@ const initGame = async () => {
     bet
   ));
   await shuffleDeck(deck);
-  // await displayMoney(money);
+  console.log(await displayMoney(money));
   // await setBet();
   // await firstDeal();
   // await displayHand(dealersHand, playersHand);
