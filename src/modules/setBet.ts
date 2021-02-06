@@ -3,7 +3,10 @@ import colors from "colors";
 
 import { checkBetFormat } from "./../modules/checkBetFormat";
 
-export const setBet = async (money: number, bet: number): Promise<number> => {
+export const setBet = async (
+  money: number,
+  bet: number
+): Promise<{ money: number; bet: number }> => {
   do {
     const input = readlineSync.question(colors.bold("Set Your Bet: "));
     try {
@@ -19,5 +22,5 @@ export const setBet = async (money: number, bet: number): Promise<number> => {
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
   } while (bet === 0);
-  return bet;
+  return { money, bet };
 };
