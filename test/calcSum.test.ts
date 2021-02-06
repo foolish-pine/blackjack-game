@@ -2,7 +2,7 @@ import { describe, it } from "mocha";
 import { calcSum } from "../src/modules/calcSum";
 import { expect } from "chai";
 
-describe("calcPlayersSum", () => {
+describe("calcSum", () => {
   describe("正常系", () => {
     it("手札の数字の合計を返す", async () => {
       try {
