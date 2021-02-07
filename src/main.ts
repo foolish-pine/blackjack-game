@@ -51,8 +51,8 @@ const displayPlayersNewCard = async () => {
 };
 
 const selectAction = async () => {
-  const playersHandNum = playersHand.map((card) => card.number);
-  const playersHandNumLength = playersHandNum.length;
+  const playersHandNum = playersHand.map((card) => card.number).length;
+  const dealersHandNum = dealersHand.map((card) => card.number).length;
   const action = readlineSync.question(
     colors.bold("Select Your Action. ") +
       colors.bold.green("Hit[h]") +
@@ -64,6 +64,9 @@ const selectAction = async () => {
   );
   console.log("");
   if (action === "h") {
+    console.log(colors.bold.cyan("You hit."));
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
     playersHand.push(shuffledDeck.pop());
     await displayPlayersNewCard();
     await displayHand(dealersHand, playersHand);
@@ -80,15 +83,38 @@ const selectAction = async () => {
     bet *= 2;
     playersHand.push(shuffledDeck.pop());
     console.log(colors.bold.cyan("You doubled down."));
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
     await displayPlayersNewCard();
     await displayHand(dealersHand, playersHand);
-    dealersSum = await checkDealersHand();
     await displayDealersSecondCard(dealersHand);
-    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
+    dealersSum = await checkDealersHand();
+    const dealersHandNumLength = dealersHand.map((card) => card.number).length;
+    const playersHandNumLength = playersHand.map((card) => card.number).length;
+    money = await checkResult(
+      dealersHandNumLength,
+      playersHandNumLength,
+      dealersSum,
+      playersSum,
+      money,
+      bet
+    );
   } else if (action === "s") {
+    console.log(colors.bold.yellow("You stand."));
+    readlineSync.question(colors.bold("(Enter)"));
+    console.log("");
     await displayDealersSecondCard(dealersHand);
     dealersSum = await checkDealersHand();
-    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
+    const dealersHandNumLength = dealersHand.map((card) => card.number).length;
+    const playersHandNumLength = playersHand.map((card) => card.number).length;
+    money = await checkResult(
+      dealersHandNumLength,
+      playersHandNumLength,
+      dealersSum,
+      playersSum,
+      money,
+      bet
+    );
   } else {
     console.log(
       colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
@@ -98,18 +124,32 @@ const selectAction = async () => {
 };
 
 const checkPlayersHand = async () => {
+  const dealersHandNum = dealersHand.map((card) => card.number);
   const playersHandNum = playersHand.map((card) => card.number);
-  const playersHandNumLength = playersHandNum.length;
+  const dealersHandNumLength = dealersHand.map((card) => card.number).length;
+  const playersHandNumLength = playersHand.map((card) => card.number).length;
+  dealersSum = await calcSum(dealersHandNum);
   playersSum = await calcSum(playersHandNum);
   if (playersSum > 21) {
-    await displayDealersSecondCard(dealersHand);
-    const dealersHandNum = dealersHand.map((card) => card.number);
-    dealersSum = await calcSum(dealersHandNum);
-    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
+    money = await checkResult(
+      dealersHandNumLength,
+      playersHandNumLength,
+      dealersSum,
+      playersSum,
+      money,
+      bet
+    );
   } else if (playersSum === 21) {
     await displayDealersSecondCard(dealersHand);
     dealersSum = await checkDealersHand();
-    await checkResult(playersHandNumLength, playersSum, dealersSum, money, bet);
+    money = await checkResult(
+      dealersHandNumLength,
+      playersHandNumLength,
+      dealersSum,
+      playersSum,
+      money,
+      bet
+    );
   } else {
     await selectAction();
   }
@@ -118,6 +158,7 @@ const checkPlayersHand = async () => {
 const checkDealersHand = async () => {
   let dealersHandNum = dealersHand.map((card) => card.number);
   let dealersSum = await calcSum(dealersHandNum);
+  displayHand(dealersHand, playersHand);
   while (
     (dealersSum === 17 && dealersHandNum.includes(11)) ||
     dealersSum < 17
@@ -162,16 +203,8 @@ const initGame = async () => {
     playersHand,
     dealersSum,
     playersSum,
-    money,
     bet,
-  } = await clearResult(
-    dealersHand,
-    playersHand,
-    dealersSum,
-    playersSum,
-    money,
-    bet
-  ));
+  } = await clearResult(dealersHand, playersHand, dealersSum, playersSum, bet));
   shuffledDeck = await shuffleDeck(deck);
   await displayMoney(money);
   ({ bet, money } = await setBet(bet, money));
@@ -181,8 +214,9 @@ const initGame = async () => {
     playersHand
   ));
   await displayHand(dealersHand, playersHand);
-  // await checkPlayersHand();
-  // initGame();
+  await checkPlayersHand();
+  if (money === 0) return;
+  initGame();
 };
 
 // タイトルのアスキーアート
