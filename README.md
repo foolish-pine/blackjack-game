@@ -1,4 +1,4 @@
-# TypeScript + Node.js製 ブラックジャック in ターミナル
+# ターミナルであそぶTypeScript + Node.js製ブラックジャック
 
 ## デモ
 <img src="https://github.com/foolish-pine/blackjack-game/wiki/images/blackjack.gif" width="500">
