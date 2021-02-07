@@ -10,6 +10,7 @@ import { checkResult } from "./modules/checkResult";
 import { displayDealersSecondCard } from "./modules/displayDealersSecondCard";
 import { displayHand } from "./modules/displayHand";
 import { displayMoney } from "./modules/displayMoney";
+import { displayPlayersNewCard } from "./modules/displayPlayersNewCard";
 import { firstDeal } from "./modules/firstDeal";
 import { setBet } from "./modules/setBet";
 import { shuffleDeck } from "./modules/shuffleDeck";
@@ -23,36 +24,7 @@ let playersSum = 0;
 let money = 1000;
 let bet = 0;
 
-const displayPlayersNewCard = async () => {
-  if (
-    playersHand[playersHand.length - 1].symbol === "♥" ||
-    playersHand[playersHand.length - 1].symbol === "♦"
-  ) {
-    console.log(
-      colors.bold("Your new card: ") +
-        colors.red.bgWhite(
-          ` ${playersHand[playersHand.length - 1].symbol} ${
-            playersHand[playersHand.length - 1].rank
-          } `
-        )
-    );
-    console.log("");
-  } else {
-    console.log(
-      colors.bold("Your new card: ") +
-        colors.black.bgWhite(
-          ` ${playersHand[playersHand.length - 1].symbol} ${
-            playersHand[playersHand.length - 1].rank
-          } `
-        )
-    );
-    console.log("");
-  }
-};
-
 const selectAction = async () => {
-  const playersHandNum = playersHand.map((card) => card.number).length;
-  const dealersHandNum = dealersHand.map((card) => card.number).length;
   const action = readlineSync.question(
     colors.bold("Select Your Action. ") +
       colors.bold.green("Hit[h]") +
@@ -68,7 +40,7 @@ const selectAction = async () => {
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
     playersHand.push(shuffledDeck.pop());
-    await displayPlayersNewCard();
+    await displayPlayersNewCard(playersHand);
     await displayHand(dealersHand, playersHand);
     await checkPlayersHand();
   } else if (action === "d") {
@@ -85,7 +57,7 @@ const selectAction = async () => {
     console.log(colors.bold.cyan("You doubled down."));
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    await displayPlayersNewCard();
+    await displayPlayersNewCard(playersHand);
     await displayHand(dealersHand, playersHand);
     await displayDealersSecondCard(dealersHand);
     dealersSum = await checkDealersHand();
