@@ -1,15 +1,17 @@
-# ターミナルであそぶTypeScript + Node.js製ブラックジャック
+# ターミナルであそべるTypeScript + Node.js製ブラックジャック
 
 ## デモ
 <img src="https://github.com/foolish-pine/blackjack-game/wiki/images/blackjack.gif" width="500">
 <br>
 
 ## 動作環境
-Node v12.18.4で動作確認済み。<br>
+Node v12.18.4で動作確認済み。
+<br>
 <br>
 
 ## ゲームの起動
 distディレクトリのmain.jsを実行して起動してください。
+<br>
 <br>
 
 ## ルール
