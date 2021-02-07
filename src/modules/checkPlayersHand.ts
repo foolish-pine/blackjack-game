@@ -1,5 +1,5 @@
 import { calcSum } from "./calcSum";
-import { checkDealersHand } from "./checkDealersHand";
+import { displayHand } from "./displayHand";
 import { checkResult } from "./checkResult";
 import { displayDealersSecondCard } from "./displayDealersSecondCard";
 import { selectAction } from "./selectAction";
@@ -32,11 +32,7 @@ export const checkPlayersHand = async (
     );
   } else if (playersSum === 21) {
     await displayDealersSecondCard(dealersHand);
-    ({ shuffledDeck, dealersSum } = await checkDealersHand(
-      shuffledDeck,
-      dealersHand,
-      playersHand
-    ));
+    await displayHand(dealersHand, playersHand);
     money = await checkResult(
       dealersHandNumLength,
       playersHandNumLength,

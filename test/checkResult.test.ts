@@ -24,7 +24,15 @@ const checkResult = async (
       money = Math.floor(money);
     } else {
       if (dealersSum === playersSum) {
-        money += bet;
+        if (
+          dealersHandNumLength === 2 &&
+          dealersSum === 21 &&
+          playersHandNumLength !== 2 &&
+          playersSum === 21
+        ) {
+        } else {
+          money += bet;
+        }
       } else if (dealersSum > playersSum) {
       } else {
         money += 2 * bet;
@@ -92,6 +100,13 @@ describe("checkResult", () => {
         expect(await checkResult(2, 3, 18, 19, 1000, 3)).equal(1006);
         expect(await checkResult(3, 2, 18, 19, 1000, 3)).equal(1006);
         expect(await checkResult(2, 3, 18, 21, 1000, 123)).equal(1246);
+      } catch (e) {
+        throw e;
+      }
+    });
+    it("ディーラーがブラックジャックで、プレイヤーの手札が3枚以上で合計21のとき、moneyを返す。", async () => {
+      try {
+        expect(await checkResult(2, 3, 21, 21, 100, 100)).equal(100);
       } catch (e) {
         throw e;
       }

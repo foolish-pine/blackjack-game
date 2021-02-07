@@ -12,7 +12,7 @@ export const checkDealersHand = async (
 ): Promise<{ shuffledDeck: Card[]; dealersSum: number }> => {
   let dealersHandNum = dealersHand.map((card) => card.number);
   let dealersSum = await calcSum(dealersHandNum);
-  displayHand(dealersHand, playersHand);
+  await displayHand(dealersHand, playersHand);
   while (
     (dealersSum === 17 && dealersHandNum.includes(11)) ||
     dealersSum < 17
