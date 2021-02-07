@@ -24,28 +24,31 @@ export const checkResult = async (
     }
   } else {
     if (
-      dealersHandNumLength !== 2 &&
-      dealersSum !== 21 &&
+      !(dealersHandNumLength === 2 && dealersSum === 21) &&
       playersHandNumLength === 2 &&
       playersSum === 21
     ) {
       console.log(colors.rainbow("B L A C K J A C K"));
       money += 2.5 * bet;
+      money = Math.floor(money);
       console.log(colors.bold.red("You Win!!"));
       console.log(
         colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`)
       );
-    }
-    if (dealersSum === playersSum) {
-      console.log(colors.bold("Draw"));
-      money += bet;
-    } else if (dealersSum > playersSum) {
-      console.log(colors.bold.blue("You Lose"));
-      console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
     } else {
-      money += 2 * bet;
-      console.log(colors.bold.red("You Win!!"));
-      console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      if (dealersSum === playersSum) {
+        console.log(colors.bold("Draw"));
+        money += bet;
+      } else if (dealersSum > playersSum) {
+        console.log(colors.bold.blue("You Lose"));
+        console.log(
+          colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`)
+        );
+      } else {
+        money += 2 * bet;
+        console.log(colors.bold.red("You Win!!"));
+        console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      }
     }
   }
   if (money === 0) {
