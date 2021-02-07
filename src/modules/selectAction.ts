@@ -1,6 +1,7 @@
 import readlineSync from "readline-sync";
 import colors from "colors";
 
+import { calcSum } from "./calcSum";
 import { checkDealersHand } from "./checkDealersHand";
 import { checkPlayersHand } from "./checkPlayersHand";
 import { checkResult } from "./checkResult";
@@ -51,7 +52,7 @@ export const selectAction = async (
       console.log(
         colors.bold("You can't double down. You don't have enough money.")
       );
-      await selectAction(
+      money = await selectAction(
         shuffledDeck,
         dealersHand,
         playersHand,
@@ -60,7 +61,7 @@ export const selectAction = async (
         money,
         bet
       );
-      return;
+      return money;
     }
     money -= bet;
     bet *= 2;
@@ -70,22 +71,37 @@ export const selectAction = async (
     console.log("");
     await displayPlayersNewCard(playersHand);
     await displayHand(dealersHand, playersHand);
-    await displayDealersSecondCard(dealersHand);
-    ({ shuffledDeck, dealersSum } = await checkDealersHand(
-      shuffledDeck,
-      dealersHand,
-      playersHand
-    ));
+    const dealersHandNum = dealersHand.map((card) => card.number);
+    const playersHandNum = playersHand.map((card) => card.number);
     const dealersHandNumLength = dealersHand.map((card) => card.number).length;
     const playersHandNumLength = playersHand.map((card) => card.number).length;
-    money = await checkResult(
-      dealersHandNumLength,
-      playersHandNumLength,
-      dealersSum,
-      playersSum,
-      money,
-      bet
-    );
+    dealersSum = await calcSum(dealersHandNum);
+    playersSum = await calcSum(playersHandNum);
+    if (playersSum > 21) {
+      money = await checkResult(
+        dealersHandNumLength,
+        playersHandNumLength,
+        dealersSum,
+        playersSum,
+        money,
+        bet
+      );
+    } else {
+      await displayDealersSecondCard(dealersHand);
+      ({ shuffledDeck, dealersSum } = await checkDealersHand(
+        shuffledDeck,
+        dealersHand,
+        playersHand
+      ));
+      money = await checkResult(
+        dealersHandNumLength,
+        playersHandNumLength,
+        dealersSum,
+        playersSum,
+        money,
+        bet
+      );
+    }
     return money;
   } else if (action === "s") {
     console.log(colors.bold.yellow("You stand."));
@@ -112,7 +128,7 @@ export const selectAction = async (
     console.log(
       colors.bold("Please input Hit[h] or DoubleDown[d] or Stand[s]")
     );
-    await selectAction(
+    money = await selectAction(
       shuffledDeck,
       dealersHand,
       playersHand,
