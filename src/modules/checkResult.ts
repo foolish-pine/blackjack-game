@@ -40,8 +40,21 @@ export const checkResult = async (
       console.log("");
     } else {
       if (dealersSum === playersSum) {
-        console.log(colors.bold("Draw"));
-        money += bet;
+        if (
+          dealersHandNumLength === 2 &&
+          dealersSum === 21 &&
+          playersHandNumLength !== 2 &&
+          playersSum === 21
+        ) {
+          console.log(colors.bold.blue("You Lose"));
+          console.log(
+            colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`)
+          );
+          console.log("");
+        } else {
+          console.log(colors.bold("Draw"));
+          money += bet;
+        }
       } else if (dealersSum > playersSum) {
         console.log(colors.bold.blue("You Lose"));
         console.log(
