@@ -1,6 +1,7 @@
 import { describe, it } from "mocha";
-import { createDeck } from "../src/modules/createDeck";
 import { expect } from "chai";
+
+import { createDeck } from "../src/modules/createDeck";
 
 describe("createDeck", () => {
   describe("正常系:", () => {

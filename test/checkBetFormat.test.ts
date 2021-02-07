@@ -1,6 +1,7 @@
 import { describe, it } from "mocha";
-import { checkBetFormat } from "../src/modules/checkBetFormat";
 import { expect } from "chai";
+
+import { checkBetFormat } from "../src/modules/checkBetFormat";
 
 describe("checkBetFormat", () => {
   describe("正常系: 第一引数は1000", () => {

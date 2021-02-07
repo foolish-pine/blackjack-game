@@ -1,6 +1,7 @@
 import { describe, it } from "mocha";
-import { clearResult } from "../src/modules/clearResult";
 import { expect } from "chai";
+
+import { clearResult } from "../src/modules/clearResult";
 
 describe("clearResult", () => {
   describe("正常系:", () => {
@@ -19,7 +20,6 @@ describe("clearResult", () => {
             ],
             15,
             21,
-            100,
             20
           )
         ).deep.equal({
@@ -27,7 +27,6 @@ describe("clearResult", () => {
           playersHand: [],
           dealersSum: 0,
           playersSum: 0,
-          money: 1000,
           bet: 0,
         });
       } catch (e) {
