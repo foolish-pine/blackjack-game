@@ -4,10 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "play": "node ./dist/main.js",
-    "mocha": "mocha --recursive --require ts-node/register 'test/**/*.ts'",
-    "lint:test": "eslint test --fix",
-    "test": "npm run lint:test & npm run mocha"
+    "start": "node ./dist/main.js",
+    "test": "mocha --recursive --require ts-node/register 'test/**/*.ts'"
   },
   "author": "",
   "license": "ISC",
