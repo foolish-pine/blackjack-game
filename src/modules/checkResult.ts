@@ -17,10 +17,12 @@ export const checkResult = async (
       money += 2 * bet;
       console.log(colors.bold.red("You Win!!"));
       console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+      console.log("");
     } else if (playersSum > 21) {
       console.log(colors.bold.blue("You Burst"));
       console.log(colors.bold.blue("You Lose"));
       console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
+      console.log("");
     }
   } else {
     if (
@@ -35,6 +37,7 @@ export const checkResult = async (
       console.log(
         colors.bold.red("You won ") + colors.bold.red(`$${1.5 * bet}`)
       );
+      console.log("");
     } else {
       if (dealersSum === playersSum) {
         console.log(colors.bold("Draw"));
@@ -44,22 +47,23 @@ export const checkResult = async (
         console.log(
           colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`)
         );
+        console.log("");
       } else {
         money += 2 * bet;
         console.log(colors.bold.red("You Win!!"));
         console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
+        console.log("");
       }
     }
   }
   if (money === 0) {
     console.log(colors.bold("You have no money."));
     console.log(colors.bold("GAME OVER!"));
-    return money;
   } else {
     await displayMoney(money);
     console.log(colors.bold("Please Enter to start next game"));
     readlineSync.question(colors.bold("(Enter)"));
     console.log("");
-    return money;
   }
+  return money;
 };
