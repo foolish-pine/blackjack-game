@@ -9,13 +9,13 @@ export const checkResult = async (
   bet: number
 ): Promise<number> => {
   if (dealersSum > 21) {
-    console.log(colors.bold.red("Dealer Burst"));
+    console.log(colors.bold.red("Dealer Busted"));
     money += 2 * bet;
     console.log(colors.bold.red("You Win!!"));
     console.log(colors.bold.red("You won ") + colors.bold.red(`$${bet}`));
     console.log("");
   } else if (playersSum > 21) {
-    console.log(colors.bold.blue("You Burst"));
+    console.log(colors.bold.blue("You Busted"));
     console.log(colors.bold.blue("You Lose"));
     console.log(colors.bold.blue("You lost ") + colors.bold.blue(`$${bet}`));
     console.log("");
