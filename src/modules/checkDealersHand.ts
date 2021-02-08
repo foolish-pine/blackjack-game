@@ -17,7 +17,7 @@ export const checkDealersHand = async (
     (dealersSum === 17 && dealersHandNum.includes(11)) ||
     dealersSum < 17
   ) {
-    // ディーラーのハンドの合計が17かつハンドに11が含まれるとき、または17未満のとき、条件を満たさなくなるまで以下を繰り返す
+    // ディーラーの手札の合計が17かつ手札に11が含まれるとき、または17未満のとき、条件を満たさなくなるまで以下を繰り返す
     // ディーラーはヒットする
     dealersHand.push(shuffledDeck.pop());
     // ディーラーが新しく引いたカードを表示する
@@ -40,7 +40,7 @@ export const checkDealersHand = async (
     }
     console.log(dealer);
     console.log("");
-    displayHand(dealersHand, playersHand);
+    await displayHand(dealersHand, playersHand);
     dealersHandNum = dealersHand.map((card) => card.number);
     dealersSum = await calcSum(dealersHandNum);
   }

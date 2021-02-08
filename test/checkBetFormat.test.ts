@@ -22,7 +22,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "string");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease input a positive integer.");
+        expect(e.message).equal("\nPlease input a positive integer.");
       }
     });
     it("正の小数が入力されたときにメッセージとともにエラーを返す", async () => {
@@ -30,7 +30,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "10.5");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease input a positive integer.");
+        expect(e.message).equal("\nPlease input a positive integer.");
       }
     });
     it("0が入力されたときにメッセージとともにエラーを返す", async () => {
@@ -38,7 +38,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "0");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease input a positive integer.");
+        expect(e.message).equal("\nPlease input a positive integer.");
       }
     });
     it("負の整数が入力されたときにメッセージとともにエラーを返す", async () => {
@@ -46,7 +46,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "-100");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease input a positive integer.");
+        expect(e.message).equal("\nPlease input a positive integer.");
       }
     });
     it("負の小数が入力されたときにメッセージとともにエラーを返す", async () => {
@@ -54,7 +54,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "-3.33");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease input a positive integer.");
+        expect(e.message).equal("\nPlease input a positive integer.");
       }
     });
     it("第1引数より大きい整数が入力されたときにメッセージとともにエラーを返す", async () => {
@@ -62,7 +62,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "1001");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease bet an amount of money you can.");
+        expect(e.message).equal("\nPlease bet an amount of money you can.");
       }
     });
     it("第1引数より大きい整数が入力されたときにメッセージとともにエラーを返す", async () => {
@@ -70,7 +70,7 @@ describe("checkBetFormat", () => {
         await checkBetFormat(1000, "10000");
       } catch (e) {
         expect(e).to.be.instanceOf(Error);
-        expect(e.message).to.eql("\nPlease bet an amount of money you can.");
+        expect(e.message).equal("\nPlease bet an amount of money you can.");
       }
     });
   });
