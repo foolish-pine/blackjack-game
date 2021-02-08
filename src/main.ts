@@ -42,16 +42,16 @@ const initGame = async () => {
     dealersHand,
     playersHand
   ));
-  dealersHandNum = dealersHand.map((card) => card.number);
-  playersHandNum = playersHand.map((card) => card.number);
-  dealersHandNumLength = dealersHand.map((card) => card.number).length;
-  playersHandNumLength = playersHand.map((card) => card.number).length;
-  dealersSum = await calcSum(dealersHandNum);
-  playersSum = await calcSum(playersHandNum);
   await displayHand(dealersHand, playersHand);
   let isGameFinished = false;
   let isPlayersTurnFinished = false;
   while (!isGameFinished) {
+    dealersHandNum = dealersHand.map((card) => card.number);
+    playersHandNum = playersHand.map((card) => card.number);
+    dealersHandNumLength = dealersHand.map((card) => card.number).length;
+    playersHandNumLength = playersHand.map((card) => card.number).length;
+    dealersSum = await calcSum(dealersHandNum);
+    playersSum = await calcSum(playersHandNum);
     if (playersSum > 21) {
       money = await checkResult(
         dealersHandNumLength,
@@ -106,17 +106,11 @@ const initGame = async () => {
         bet
       );
       isGameFinished = true;
-    } else {
+    } else if (!isGameFinished) {
       ({
         shuffledDeck,
         dealersHand,
         playersHand,
-        dealersHandNum,
-        playersHandNum,
-        dealersHandNumLength,
-        playersHandNumLength,
-        dealersSum,
-        playersSum,
         money,
         bet,
         isPlayersTurnFinished,
@@ -124,12 +118,6 @@ const initGame = async () => {
         shuffledDeck,
         dealersHand,
         playersHand,
-        dealersHandNum,
-        playersHandNum,
-        dealersHandNumLength,
-        playersHandNumLength,
-        dealersSum,
-        playersSum,
         money,
         bet,
         isPlayersTurnFinished
