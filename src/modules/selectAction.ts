@@ -1,7 +1,6 @@
 import readlineSync from "readline-sync";
 import colors from "colors";
 
-import { calcSum } from "./calcSum";
 import { displayHand } from "./displayHand";
 import { displayPlayersNewCard } from "./displayPlayersNewCard";
 
@@ -11,12 +10,6 @@ export const selectAction = async (
   shuffledDeck: Card[],
   dealersHand: Card[],
   playersHand: Card[],
-  dealersHandNum: number[],
-  playersHandNum: number[],
-  dealersHandNumLength: number,
-  playersHandNumLength: number,
-  dealersSum: number,
-  playersSum: number,
   money: number,
   bet: number,
   isPlayersTurnFinished: boolean
@@ -24,12 +17,6 @@ export const selectAction = async (
   shuffledDeck: Card[];
   dealersHand: Card[];
   playersHand: Card[];
-  dealersHandNum: number[];
-  playersHandNum: number[];
-  dealersHandNumLength: number;
-  playersHandNumLength: number;
-  dealersSum: number;
-  playersSum: number;
   money: number;
   bet: number;
   isPlayersTurnFinished: boolean;
@@ -55,12 +42,6 @@ export const selectAction = async (
       shuffledDeck,
       dealersHand,
       playersHand,
-      dealersHandNum,
-      playersHandNum,
-      dealersHandNumLength,
-      playersHandNumLength,
-      dealersSum,
-      playersSum,
       money,
       bet,
       isPlayersTurnFinished,
@@ -74,12 +55,6 @@ export const selectAction = async (
         shuffledDeck,
         dealersHand,
         playersHand,
-        dealersHandNum,
-        playersHandNum,
-        dealersHandNumLength,
-        playersHandNumLength,
-        dealersSum,
-        playersSum,
         money,
         bet,
         isPlayersTurnFinished,
@@ -94,22 +69,10 @@ export const selectAction = async (
     console.log("");
     await displayPlayersNewCard(playersHand);
     await displayHand(dealersHand, playersHand);
-    dealersHandNum = dealersHand.map((card) => card.number);
-    playersHandNum = playersHand.map((card) => card.number);
-    dealersHandNumLength = dealersHand.map((card) => card.number).length;
-    playersHandNumLength = playersHand.map((card) => card.number).length;
-    dealersSum = await calcSum(dealersHandNum);
-    playersSum = await calcSum(playersHandNum);
     return {
       shuffledDeck,
       dealersHand,
       playersHand,
-      dealersHandNum,
-      playersHandNum,
-      dealersHandNumLength,
-      playersHandNumLength,
-      dealersSum,
-      playersSum,
       money,
       bet,
       isPlayersTurnFinished,
@@ -123,12 +86,6 @@ export const selectAction = async (
       shuffledDeck,
       dealersHand,
       playersHand,
-      dealersHandNum,
-      playersHandNum,
-      dealersHandNumLength,
-      playersHandNumLength,
-      dealersSum,
-      playersSum,
       money,
       bet,
       isPlayersTurnFinished,
@@ -141,12 +98,6 @@ export const selectAction = async (
       shuffledDeck,
       dealersHand,
       playersHand,
-      dealersHandNum,
-      playersHandNum,
-      dealersHandNumLength,
-      playersHandNumLength,
-      dealersSum,
-      playersSum,
       money,
       bet,
       isPlayersTurnFinished,
