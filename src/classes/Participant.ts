@@ -2,11 +2,9 @@ import { Card } from "./Card";
 import { Deck } from "./Deck";
 
 export class Participant {
-  private _deck: Deck;
   private _hand: Card[];
 
-  constructor(deck: Deck) {
-    this._deck = deck;
+  constructor(private _deck: Deck) {
     this._hand = [];
   }
 
