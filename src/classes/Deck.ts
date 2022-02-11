@@ -38,10 +38,6 @@ export class Deck {
     return this._cards;
   }
 
-  set cards(cards: Card[]) {
-    this._cards = cards;
-  }
-
   shuffle(): void {
     const cardNum = this.cards.length;
     for (let i = cardNum - 1; i >= 0; i--) {
@@ -54,6 +50,6 @@ export class Deck {
   }
 
   draw(): Card {
-    return this.cards.pop();
+    return this.cards.pop() as Card;
   }
 }
