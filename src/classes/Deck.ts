@@ -32,6 +32,7 @@ export class Deck {
         this._cards.push(new Card(symbols[i], number, rank));
       }
     }
+    this.shuffle();
   }
 
   get cards(): Card[] {
