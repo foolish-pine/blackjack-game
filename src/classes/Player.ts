@@ -1,4 +1,4 @@
-import * as colors from "colors";
+const colors = require("colors");
 
 import { Deck } from "./Deck";
 import { Participant } from "./Participant";

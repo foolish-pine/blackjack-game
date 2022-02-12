@@ -1,5 +1,5 @@
 import * as figlet from "figlet";
-import * as colors from "colors";
+const colors = require("colors");
 
 import { Card } from "./Card";
 import { Deck } from "./Deck";
