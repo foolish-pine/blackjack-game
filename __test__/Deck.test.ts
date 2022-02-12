@@ -58,22 +58,28 @@ describe("Deckクラス", () => {
     new Card(String.fromCodePoint(0x2663), 10, "K"),
   ];
 
-  it("cardsはすべての種類のカードを含む", () => {
-    expect(deck.cards).toEqual(expect.arrayContaining(originalCards));
-    expect(originalCards).toEqual(expect.arrayContaining(deck.cards));
+  describe("cardsゲッター", () => {
+    it("cardsはすべての種類のカードを含む", () => {
+      expect(deck.cards).toEqual(expect.arrayContaining(originalCards));
+      expect(originalCards).toEqual(expect.arrayContaining(deck.cards));
+    });
   });
 
-  it("shuffle()メソッドはcardsの要素をランダムに入れ替えて返す。shuffle()メソッド実行前と後のcardsは順不同で同一の要素をもつ。", () => {
-    const beforeCards = [...deck.cards];
-    deck.shuffle();
-    const afterCards = [...deck.cards];
+  describe("shuffle()メソッド", () => {
+    it("cardsの要素をランダムに入れ替えて返す。実行前と後のcardsは順不同で同一の要素をもつ。", () => {
+      const beforeCards = [...deck.cards];
+      deck.shuffle();
+      const afterCards = [...deck.cards];
 
-    expect(beforeCards).toEqual(expect.arrayContaining(afterCards));
-    expect(afterCards).toEqual(expect.arrayContaining(beforeCards));
+      expect(beforeCards).toEqual(expect.arrayContaining(afterCards));
+      expect(afterCards).toEqual(expect.arrayContaining(beforeCards));
+    });
   });
 
-  it("draw()メソッドはcardsの一番最後の要素をひとつpopする", () => {
-    const topCard = deck.cards[deck.cards.length - 1];
-    expect(deck.draw()).toEqual(topCard);
+  describe("draw()メソッド", () => {
+    it("cardsの一番最後の要素をひとつpopする", () => {
+      const topCard = deck.cards[deck.cards.length - 1];
+      expect(deck.draw()).toEqual(topCard);
+    });
   });
 });

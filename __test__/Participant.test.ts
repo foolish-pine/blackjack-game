@@ -62,34 +62,42 @@ describe("Participantクラス", () => {
     new Card(String.fromCodePoint(0x2660), 10, "J"),
   ];
 
-  it("deckゲッターはdeckを返す。", () => {
-    expect(participant1.deck).toBeInstanceOf(Deck);
+  describe("deckゲッター", () => {
+    it("deckを返す", () => {
+      expect(participant1.deck).toBeInstanceOf(Deck);
+    });
   });
 
-  it("deckセッターはdeckをセットする。", () => {
-    participant1.deck = new Deck();
-    expect(participant1.deck).toBeInstanceOf(Deck);
+  describe("deckセッター", () => {
+    it("deckをセットする", () => {
+      participant1.deck = new Deck();
+      expect(participant1.deck).toBeInstanceOf(Deck);
+    });
   });
 
-  it("handを返す。", () => {
-    expect(participant1.hand).toEqual([
-      new Card(String.fromCodePoint(0x2660), 2, "2"),
-      new Card(String.fromCodePoint(0x2660), 8, "8"),
-    ]);
+  describe("handゲッター", () => {
+    it("handを返す", () => {
+      expect(participant1.hand).toEqual([
+        new Card(String.fromCodePoint(0x2660), 2, "2"),
+        new Card(String.fromCodePoint(0x2660), 8, "8"),
+      ]);
+    });
   });
 
-  it("handをセットする。", () => {
-    participant10.hand = [
-      new Card(String.fromCodePoint(0x2660), 3, "3"),
-      new Card(String.fromCodePoint(0x2660), 9, "9"),
-    ];
-    expect(participant10.hand).toEqual([
-      new Card(String.fromCodePoint(0x2660), 3, "3"),
-      new Card(String.fromCodePoint(0x2660), 9, "9"),
-    ]);
+  describe("handセッター", () => {
+    it("handをセットする。", () => {
+      participant10.hand = [
+        new Card(String.fromCodePoint(0x2660), 3, "3"),
+        new Card(String.fromCodePoint(0x2660), 9, "9"),
+      ];
+      expect(participant10.hand).toEqual([
+        new Card(String.fromCodePoint(0x2660), 3, "3"),
+        new Card(String.fromCodePoint(0x2660), 9, "9"),
+      ]);
+    });
   });
 
-  describe("sumゲッターはhandの数字の合計を返す", () => {
+  describe("sumゲッター", () => {
     it("handにエースが含まれないときは数字の合計をそのまま返す", () => {
       expect(participant1.sum).toBe(10);
       expect(participant2.sum).toBe(11);
@@ -107,7 +115,8 @@ describe("Participantクラス", () => {
       expect(participant8.sum).toBe(12);
     });
   });
-  describe("isBlackjackゲッターはhandがブラックジャックの条件を返すならtrueを、満たさないならfalseを返す", () => {
+
+  describe("isBlackjackゲッター", () => {
     it("handの数字の合計が21かつhandの要素数が2のときtrueを返す。", () => {
       expect(participant4.isBlackjack).toBe(true);
     });
@@ -128,20 +137,25 @@ describe("Participantクラス", () => {
     });
   });
 
-  it("メソッドはdeck.draw()の返り値をhandにpush()する。これを2回行う。", () => {
-    const cards = new Deck().cards;
-    participant1.hand = [];
-    participant1.deal();
-    expect(cards).toEqual(expect.arrayContaining(participant1.hand));
+  describe("deal()メソッド", () => {
+    it("deck.draw()の返り値をhandにpush()する。これを2回行う。", () => {
+      const cards = new Deck().cards;
+      participant1.hand = [];
+      participant1.deal();
+      expect(cards).toEqual(expect.arrayContaining(participant1.hand));
+    });
   });
 
-  it("hit()メソッドはdeck.draw()の返り値をhandにpush()する。", () => {
-    const topCard = participant2.deck.cards[participant2.deck.cards.length - 1];
-    participant2.hit();
-    expect(participant2.hand).toEqual([
-      new Card(String.fromCodePoint(0x2660), 2, "2"),
-      new Card(String.fromCodePoint(0x2660), 9, "9"),
-      topCard,
-    ]);
+  describe("hit()メソッド", () => {
+    it("deck.draw()の返り値をhandにpush()する。", () => {
+      const topCard =
+        participant2.deck.cards[participant2.deck.cards.length - 1];
+      participant2.hit();
+      expect(participant2.hand).toEqual([
+        new Card(String.fromCodePoint(0x2660), 2, "2"),
+        new Card(String.fromCodePoint(0x2660), 9, "9"),
+        topCard,
+      ]);
+    });
   });
 });
