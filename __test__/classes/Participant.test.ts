@@ -1,6 +1,6 @@
-import { Card } from "../src/classes/Card";
-import { Deck } from "../src/classes/Deck";
-import { Participant } from "../src/classes/Participant";
+import { Card } from "../../src/classes/Card";
+import { Deck } from "../../src/classes/Deck";
+import { Participant } from "../../src/classes/Participant";
 
 describe("Participantクラス", () => {
   const participant1 = new Participant(new Deck());

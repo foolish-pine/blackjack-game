@@ -1,5 +1,5 @@
-import { Card } from "../src/classes/Card";
-import { Deck } from "../src/classes/Deck";
+import { Card } from "../../src/classes/Card";
+import { Deck } from "../../src/classes/Deck";
 
 describe("Deckクラス", () => {
   const deck = new Deck();

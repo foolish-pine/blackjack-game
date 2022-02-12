@@ -1,4 +1,4 @@
-import { Card } from "../src/classes/Card";
+import { Card } from "../../src/classes/Card";
 
 describe("Cardクラス", () => {
   const card1 = new Card(String.fromCodePoint(0x2660), 1, "A");
