@@ -1,11 +1,8 @@
-import { describe, it, beforeEach } from "mocha";
-import { expect } from "chai";
-
 import { Card } from "../src/classes/Card";
 import { Deck } from "../src/classes/Deck";
 
 describe("Deckクラス", () => {
-  let deck = new Deck();
+  const deck = new Deck();
   const originalCards = [
     new Card(String.fromCodePoint(0x2660), 1, "A"),
     new Card(String.fromCodePoint(0x2660), 2, "2"),
@@ -60,58 +57,23 @@ describe("Deckクラス", () => {
     new Card(String.fromCodePoint(0x2663), 10, "Q"),
     new Card(String.fromCodePoint(0x2663), 10, "K"),
   ];
-  describe("コンストラクタ", () => {
-    beforeEach(() => {
-      deck = new Deck();
-    });
 
-    it("カードを生成する。", () => {
-      expect(deck.cards).deep.equal(originalCards);
-    });
+  it("cardsはすべての種類のカードを含む", () => {
+    expect(deck.cards).toEqual(expect.arrayContaining(originalCards));
+    expect(originalCards).toEqual(expect.arrayContaining(deck.cards));
   });
-  describe("cardsゲッター", () => {
-    beforeEach(() => {
-      deck = new Deck();
-    });
 
-    it("cardsを返す。", () => {
-      expect(deck.cards).deep.equal(originalCards);
-    });
+  it("shuffle()メソッドはcardsの要素をランダムに入れ替えて返す。shuffle()メソッド実行前と後のcardsは順不同で同一の要素をもつ。", () => {
+    const beforeCards = [...deck.cards];
+    deck.shuffle();
+    const afterCards = [...deck.cards];
+
+    expect(beforeCards).toEqual(expect.arrayContaining(afterCards));
+    expect(afterCards).toEqual(expect.arrayContaining(beforeCards));
   });
-  describe("cardsセッター", () => {
-    beforeEach(() => {
-      deck = new Deck();
-    });
 
-    it("cardsをセットする。", () => {
-      deck.cards = originalCards;
-      expect(deck.cards).deep.equal(originalCards);
-    });
-  });
-  describe("shuffle()メソッド", () => {
-    beforeEach(() => {
-      deck = new Deck();
-    });
-
-    it("cardsの要素をランダムに入れ替えて返す。shuffle()メソッド実行前と後のcardsは順不同で同一の要素をもつ。", () => {
-      const originalCards = [...deck.cards];
-      deck.shuffle();
-      expect(originalCards).members(deck.cards);
-    });
-  });
-  describe("draw()メソッド", () => {
-    beforeEach(() => {
-      deck = new Deck();
-    });
-
-    it("cardsの要素をpop()して返す。", () => {
-      deck.cards = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-        new Card(String.fromCodePoint(0x2660), 4, "4"),
-      ];
-      expect(deck.cards[deck.cards.length - 1]).equal(deck.draw());
-    });
+  it("draw()メソッドはcardsの一番最後の要素をひとつpopする", () => {
+    const topCard = deck.cards[deck.cards.length - 1];
+    expect(deck.draw()).toEqual(topCard);
   });
 });
