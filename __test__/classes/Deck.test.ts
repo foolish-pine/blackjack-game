@@ -69,10 +69,10 @@ describe("Deckクラス", () => {
     it("cardsの要素をランダムに入れ替えて返す。実行前と後のcardsは順不同で同一の要素をもつ。", () => {
       const beforeCards = [...deck.cards];
       deck.shuffle();
-      const afterCards = [...deck.cards];
 
-      expect(beforeCards).toEqual(expect.arrayContaining(afterCards));
-      expect(afterCards).toEqual(expect.arrayContaining(beforeCards));
+      expect(beforeCards).not.toEqual(deck.cards);
+      expect(beforeCards).toEqual(expect.arrayContaining(deck.cards));
+      expect(deck.cards).toEqual(expect.arrayContaining(beforeCards));
     });
   });
 
