@@ -1,5 +1,4 @@
-import { cardSymbols } from "./Card";
-import { cardNumberAndRanks } from "./Card";
+import { cardSymbols, cardNumberAndRanks } from "./Card";
 import { Card } from "./Card";
 
 export class Deck {
