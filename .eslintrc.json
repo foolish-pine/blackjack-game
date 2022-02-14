@@ -1,7 +1,9 @@
 {
   "extends": [
+    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
     "prettier/@typescript-eslint"
   ],
   "plugins": [],
@@ -12,17 +14,10 @@
   },
   "globals": {},
   "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "singleQuote": false
-      }
-    ],
-    "no-console": "off",
-    "no-undef": "warn",
     "no-alert": "warn",
-    "eqeqeq": "warn",
-    "no-var": "warn",
-    "semi": "warn"
+		"no-console": "warn",
+		"no-unused-vars": "warn",
+		"no-var": "warn",
+		"eqeqeq": "warn"
   }
 }
