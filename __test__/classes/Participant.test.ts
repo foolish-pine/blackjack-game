@@ -167,28 +167,38 @@ describe("Participantクラス", () => {
 
   describe("deal()メソッド", () => {
     it("deck.draw()の返り値をhandにpush()する。これを2回行う。", () => {
-      const participant1 = new Participant(new Deck());
-      const cards = new Deck().cards;
-      participant1.hand = [];
+      const deck = new Deck();
+      const participant1 = new Participant(deck);
+      participant1.hand = [new Card(String.fromCodePoint(0x2660), 1, "A")];
+      const mockDraw = jest
+        .spyOn(deck, "draw")
+        .mockReturnValueOnce(new Card(String.fromCodePoint(0x2660), 2, "2"))
+        .mockReturnValueOnce(new Card(String.fromCodePoint(0x2660), 3, "3"));
+
       participant1.deal();
-      expect(cards).toEqual(expect.arrayContaining(participant1.hand));
+      expect(mockDraw).toHaveBeenCalledTimes(2);
+      expect(participant1.hand).toEqual([
+        new Card(String.fromCodePoint(0x2660), 1, "A"),
+        new Card(String.fromCodePoint(0x2660), 2, "2"),
+        new Card(String.fromCodePoint(0x2660), 3, "3"),
+      ]);
     });
   });
 
   describe("hit()メソッド", () => {
     it("deck.draw()の返り値をhandにpush()する。", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 8, "8"),
-      ];
-      const topCard =
-        participant1.deck.cards[participant1.deck.cards.length - 1];
+      const deck = new Deck();
+      const participant1 = new Participant(deck);
+      participant1.hand = [new Card(String.fromCodePoint(0x2660), 1, "A")];
+      const mockDraw = jest
+        .spyOn(deck, "draw")
+        .mockReturnValue(new Card(String.fromCodePoint(0x2660), 2, "2"));
+
       participant1.hit();
+      expect(mockDraw).toHaveBeenCalled;
       expect(participant1.hand).toEqual([
+        new Card(String.fromCodePoint(0x2660), 1, "A"),
         new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 8, "8"),
-        topCard,
       ]);
     });
   });
