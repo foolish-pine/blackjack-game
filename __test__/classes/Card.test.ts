@@ -4,9 +4,9 @@ describe("Cardクラス", () => {
   const card1 = new Card(String.fromCodePoint(0x2660), 1, "A");
   const card2 = new Card(String.fromCodePoint(0x2660), 9, "9");
   const card3 = new Card(String.fromCodePoint(0x2660), 10, "10");
-  const card4 = new Card(String.fromCodePoint(0x2665), 11, "J");
-  const card5 = new Card(String.fromCodePoint(0x2666), 12, "Q");
-  const card6 = new Card(String.fromCodePoint(0x2663), 13, "K");
+  const card4 = new Card(String.fromCodePoint(0x2665), 10, "J");
+  const card5 = new Card(String.fromCodePoint(0x2666), 10, "Q");
+  const card6 = new Card(String.fromCodePoint(0x2663), 10, "K");
 
   describe("symbolゲッター", () => {
     it("カードのシンボルを返す", () => {
