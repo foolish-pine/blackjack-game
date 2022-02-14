@@ -1,14 +1,15 @@
-import * as colors from "colors";
+import colors from "colors";
 
 import { Deck } from "./Deck";
 import { Participant } from "./Participant";
 
+import { printLine } from "../utils/printLine";
+
 export class Dealer extends Participant {
-  private _isSecondCardOpen: boolean;
+  private _isSecondCardOpen = false;
 
   constructor(deck: Deck) {
     super(deck);
-    this._isSecondCardOpen = false;
   }
 
   get isSecondCardOpen(): boolean {
@@ -19,7 +20,7 @@ export class Dealer extends Participant {
     this._isSecondCardOpen = isSecondCardOpen;
   }
 
-  clear(): void {
+  clearStatus(): void {
     this.hand = [];
     this.isSecondCardOpen = false;
   }
@@ -27,7 +28,7 @@ export class Dealer extends Participant {
   renderSecondCard(): void {
     this.isSecondCardOpen = true;
 
-    let renderedCard = colors.bold("Dealer's second card: ");
+    let renderedCard = colors.bold("\nDealer's second card: ");
     if (
       this.hand[1].symbol === String.fromCodePoint(0x2665) ||
       this.hand[1].symbol === String.fromCodePoint(0x2666)
@@ -41,11 +42,11 @@ export class Dealer extends Participant {
       );
     }
     renderedCard += "\n";
-    console.log(renderedCard);
+    printLine(renderedCard);
   }
 
   renderHand(): void {
-    let renderedHand = colors.bold(`Dealer: `);
+    let renderedHand = colors.bold(`\nDealer: `);
     if (this.isSecondCardOpen) {
       for (let i = 0; i < this.hand.length; i++) {
         if (
@@ -79,11 +80,11 @@ export class Dealer extends Participant {
       renderedHand += colors.black.bgWhite(" ??? ");
     }
     renderedHand += "\n";
-    console.log(renderedHand);
+    printLine(renderedHand);
   }
 
   renderNewCard(): void {
-    let renderedCard = colors.bold("Dealer's new card: ");
+    let renderedCard = colors.bold("\nDealer's new card: ");
     if (
       this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
       this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)

@@ -1,23 +1,19 @@
-import * as readlineSync from "readline-sync";
-import * as colors from "colors";
+import colors from "colors";
 
 import { Deck } from "./Deck";
 import { Participant } from "./Participant";
 
+import { printLine } from "../utils/printLine";
+
 export class Player extends Participant {
-  private _money: number;
-  private _bet: number;
-  private _hasHit: boolean;
-  private _hasDoubleDowned: boolean;
-  private _isStanding: boolean;
+  private _money = 1000;
+  private _bet = 0;
+  private _hasHit = false;
+  private _hasDoubleDowned = false;
+  private _isStanding = false;
 
   constructor(deck: Deck) {
     super(deck);
-    this._money = 1000;
-    this._bet = 0;
-    this._hasHit = false;
-    this._hasDoubleDowned = false;
-    this._isStanding = false;
   }
 
   get money(): number {
@@ -60,7 +56,7 @@ export class Player extends Participant {
     this._isStanding = isStanding;
   }
 
-  clear(): void {
+  clearStatus(): void {
     this.hand = [];
     this.bet = 0;
     this.hasHit = false;
@@ -69,49 +65,19 @@ export class Player extends Participant {
   }
 
   renderMoney(): void {
-    console.log(
-      colors.bold.yellow("Your money: ") + colors.bold.yellow(`$${this.money}`)
+    printLine(
+      `\n${colors.bold.yellow("Your money: ")}${colors.bold.yellow(
+        `$${this.money}`
+      )}`
     );
   }
 
-  setBet(input: string): void {
-    if (
-      isNaN(Number(input)) ||
-      !Number.isInteger(Number(input)) ||
-      Number(input) <= 0
-    ) {
-      throw new Error("\nPlease input a positive integer.");
-    } else if (Number(input) > this.money) {
-      throw new Error("\nPlease bet an amount of money you can.");
-    } else {
-      this.bet = Number(input);
-    }
-    this.money -= this.bet;
-  }
-
   renderHand(): void {
-    let renderedHand = colors.bold(`You:    `);
-    for (let i = 0; i < this.hand.length; i++) {
-      if (
-        this.hand[i].symbol === String.fromCodePoint(0x2665) ||
-        this.hand[i].symbol === String.fromCodePoint(0x2666)
-      ) {
-        renderedHand += colors.red.bgWhite(
-          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
-        );
-      } else {
-        renderedHand += colors.black.bgWhite(
-          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
-        );
-      }
-      renderedHand += "  ";
-    }
-    renderedHand += "\n";
-    console.log(renderedHand);
+    super.renderHand(`\nYou:    `);
   }
 
   renderNewCard(): void {
-    let renderedCard = colors.bold("Your new card: ");
+    let renderedCard = colors.bold("\nYour new card: ");
     if (
       this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
       this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)
@@ -129,7 +95,12 @@ export class Player extends Participant {
       );
     }
     renderedCard += "\n";
-    console.log(renderedCard);
+    printLine(renderedCard);
+  }
+
+  hit(): void {
+    this.hasHit = true;
+    this.hand.push(this.deck.draw());
   }
 
   doubleDown(): void {
@@ -139,21 +110,7 @@ export class Player extends Participant {
     this.hand.push(this.deck.draw());
   }
 
-  selectAction(): string {
-    const question = this.hasHit
-      ? `${colors.bold("Select Your Action.")} ${colors.bold.green(
-          "Hit[h]"
-        )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}${colors.bold(
-          ":"
-        )} `
-      : `${colors.bold("Select Your Action.")} ${colors.bold.green(
-          "Hit[h]"
-        )} ${colors.bold("/")} ${colors.bold.cyan(
-          "DoubleDown[d]"
-        )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}${colors.bold(
-          ":"
-        )} `;
-    const answer = readlineSync.question(question);
-    return answer;
+  stand(): void {
+    this.isStanding = true;
   }
 }

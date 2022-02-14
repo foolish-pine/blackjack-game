@@ -1,16 +1,10 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
-    "noImplicitAny": true,
+    "module": "es2015",
+    "strict": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "lib": [
-      "es2019",
-      "dom"
-    ],
+    "esModuleInterop": true,
+    "downlevelIteration": true,
   },
-  "exclude": [
-    "node_modules"
-  ]
 }

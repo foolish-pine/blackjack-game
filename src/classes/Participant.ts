@@ -1,12 +1,14 @@
-import { Card } from "./Card";
+import colors from "colors";
+
+import { Card, cardSymbols } from "./Card";
 import { Deck } from "./Deck";
 
+import { printLine } from "../utils/printLine";
+
 export class Participant {
-  private _deck: Deck;
   private _hand: Card[];
 
-  constructor(deck: Deck) {
-    this._deck = deck;
+  constructor(private _deck: Deck) {
     this._hand = [];
   }
 
@@ -51,5 +53,26 @@ export class Participant {
 
   hit(): void {
     this.hand.push(this.deck.draw());
+  }
+
+  renderHand(prefix: string): void {
+    let renderedHand = colors.bold(prefix);
+    for (let i = 0; i < this.hand.length; i++) {
+      if (
+        this.hand[i].symbol === cardSymbols.get("heart") ||
+        this.hand[i].symbol === cardSymbols.get("diamond")
+      ) {
+        renderedHand += colors.red.bgWhite(
+          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
+        );
+      } else {
+        renderedHand += colors.black.bgWhite(
+          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
+        );
+      }
+      renderedHand += "  ";
+    }
+    renderedHand += "\n";
+    printLine(renderedHand);
   }
 }

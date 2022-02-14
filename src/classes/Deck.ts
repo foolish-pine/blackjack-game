@@ -1,3 +1,4 @@
+import { cardSymbols, cardNumberAndRanks } from "./Card";
 import { Card } from "./Card";
 
 export class Deck {
@@ -5,41 +6,19 @@ export class Deck {
 
   constructor() {
     this._cards = [];
-    const symbols = [
-      String.fromCodePoint(0x2660),
-      String.fromCodePoint(0x2665),
-      String.fromCodePoint(0x2666),
-      String.fromCodePoint(0x2663),
-    ];
-    for (let i = 0; i < symbols.length; i++) {
-      for (let j = 1; j <= 13; j++) {
-        let number = j;
-        if (j > 10) {
-          number = 10;
-        }
-        let rank: string;
-        if (j === 1) {
-          rank = "A";
-        } else if (j === 11) {
-          rank = "J";
-        } else if (j === 12) {
-          rank = "Q";
-        } else if (j === 13) {
-          rank = "K";
-        } else {
-          rank = `${j}`;
-        }
-        this._cards.push(new Card(symbols[i], number, rank));
-      }
-    }
+    cardSymbols.forEach((cardSymbol) => {
+      cardNumberAndRanks.forEach((cardNumberAndRank) => {
+        this._cards.push(
+          new Card(cardSymbol, cardNumberAndRank.number, cardNumberAndRank.rank)
+        );
+      });
+    });
+
+    this.shuffle();
   }
 
   get cards(): Card[] {
     return this._cards;
-  }
-
-  set cards(cards: Card[]) {
-    this._cards = cards;
   }
 
   shuffle(): void {
@@ -54,6 +33,6 @@ export class Deck {
   }
 
   draw(): Card {
-    return this.cards.pop();
+    return this.cards.pop() as Card;
   }
 }
