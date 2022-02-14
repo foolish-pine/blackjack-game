@@ -1,6 +1,16 @@
+import colors from "colors";
+
 import { Card } from "../../src/classes/Card";
 import { Deck } from "../../src/classes/Deck";
 import { Participant } from "../../src/classes/Participant";
+
+import * as printLine from "../../src/utils/printLine";
+
+const mockPrintLine = jest.spyOn(printLine, "printLine").mockImplementation();
+
+afterEach(() => {
+  mockPrintLine.mockReset();
+});
 
 describe("Participantクラス", () => {
   describe("deckゲッター", () => {
@@ -200,6 +210,41 @@ describe("Participantクラス", () => {
         new Card(String.fromCodePoint(0x2660), 1, "A"),
         new Card(String.fromCodePoint(0x2660), 2, "2"),
       ]);
+    });
+  });
+
+  describe("renderHand()メソッド", () => {
+    it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に黒の絵札が含まれるとき", () => {
+      const participant1 = new Participant(new Deck());
+      participant1.hand = [
+        new Card(String.fromCodePoint(0x2660), 1, "A"),
+        new Card(String.fromCodePoint(0x2663), 2, "2"),
+      ];
+      participant1.renderHand("");
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.black.bgWhite(` ${String.fromCodePoint(0x2660)} A `) +
+          "  " +
+          colors.black.bgWhite(` ${String.fromCodePoint(0x2663)} 2 `) +
+          "  " +
+          "\n"
+      );
+    });
+    it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に赤の絵札が含まれるとき", () => {
+      const participant1 = new Participant(new Deck());
+      participant1.hand = [
+        new Card(String.fromCodePoint(0x2665), 10, "J"),
+        new Card(String.fromCodePoint(0x2666), 10, "Q"),
+      ];
+      participant1.renderHand("");
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.red.bgWhite(` ${String.fromCodePoint(0x2665)} J `) +
+          "  " +
+          colors.red.bgWhite(` ${String.fromCodePoint(0x2666)} Q `) +
+          "  " +
+          "\n"
+      );
     });
   });
 });
