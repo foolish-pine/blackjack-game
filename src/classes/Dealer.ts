@@ -6,11 +6,10 @@ import { Participant } from "./Participant";
 import { printLine } from "../utils/printLine";
 
 export class Dealer extends Participant {
-  private _isSecondCardOpen: boolean;
+  private _isSecondCardOpen = false;
 
   constructor(deck: Deck) {
     super(deck);
-    this._isSecondCardOpen = false;
   }
 
   get isSecondCardOpen(): boolean {

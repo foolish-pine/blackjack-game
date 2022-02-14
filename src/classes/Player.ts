@@ -6,19 +6,14 @@ import { Participant } from "./Participant";
 import { printLine } from "../utils/printLine";
 
 export class Player extends Participant {
-  private _money: number;
-  private _bet: number;
-  private _hasHit: boolean;
-  private _hasDoubleDowned: boolean;
-  private _isStanding: boolean;
+  private _money = 1000;
+  private _bet = 0;
+  private _hasHit = false;
+  private _hasDoubleDowned = false;
+  private _isStanding = false;
 
   constructor(deck: Deck) {
     super(deck);
-    this._money = 1000;
-    this._bet = 0;
-    this._hasHit = false;
-    this._hasDoubleDowned = false;
-    this._isStanding = false;
   }
 
   get money(): number {
@@ -78,24 +73,7 @@ export class Player extends Participant {
   }
 
   renderHand(): void {
-    let renderedHand = colors.bold(`\nYou:    `);
-    for (let i = 0; i < this.hand.length; i++) {
-      if (
-        this.hand[i].symbol === String.fromCodePoint(0x2665) ||
-        this.hand[i].symbol === String.fromCodePoint(0x2666)
-      ) {
-        renderedHand += colors.red.bgWhite(
-          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
-        );
-      } else {
-        renderedHand += colors.black.bgWhite(
-          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
-        );
-      }
-      renderedHand += "  ";
-    }
-    renderedHand += "\n";
-    printLine(renderedHand);
+    super.renderHand(`\nYou:    `);
   }
 
   renderNewCard(): void {
