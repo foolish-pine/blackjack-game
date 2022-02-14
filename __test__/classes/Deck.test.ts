@@ -2,7 +2,6 @@ import { Card } from "../../src/classes/Card";
 import { Deck } from "../../src/classes/Deck";
 
 describe("Deckクラス", () => {
-  const deck = new Deck();
   const originalCards = [
     new Card(String.fromCodePoint(0x2660), 1, "A"),
     new Card(String.fromCodePoint(0x2660), 2, "2"),
@@ -60,6 +59,7 @@ describe("Deckクラス", () => {
 
   describe("cardsゲッター", () => {
     it("cardsはすべての種類のカードを含む", () => {
+      const deck = new Deck();
       expect(deck.cards).toEqual(expect.arrayContaining(originalCards));
       expect(originalCards).toEqual(expect.arrayContaining(deck.cards));
     });
@@ -67,6 +67,7 @@ describe("Deckクラス", () => {
 
   describe("shuffle()メソッド", () => {
     it("cardsの要素をランダムに入れ替えて返す。実行前と後のcardsは順不同で同一の要素をもつ。", () => {
+      const deck = new Deck();
       const beforeCards = [...deck.cards];
       deck.shuffle();
 
@@ -78,6 +79,7 @@ describe("Deckクラス", () => {
 
   describe("draw()メソッド", () => {
     it("cardsの一番最後の要素をひとつpopする", () => {
+      const deck = new Deck();
       const topCard = deck.cards[deck.cards.length - 1];
       expect(deck.draw()).toEqual(topCard);
     });
