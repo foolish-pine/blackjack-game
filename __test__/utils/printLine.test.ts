@@ -3,7 +3,7 @@ import { printLine } from "../../src/utils/printLine";
 const mockProcessStdoutWrite = jest.spyOn(process.stdout, "write");
 
 afterEach(() => {
-  mockProcessStdoutWrite.mockReset();
+  jest.resetAllMocks();
 });
 
 describe("printLine関数", () => {
