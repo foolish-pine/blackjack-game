@@ -4,146 +4,163 @@ import { Card } from "../../src/classes/Card";
 import { Deck } from "../../src/classes/Deck";
 import { Participant } from "../../src/classes/Participant";
 
-import * as printLine from "../../src/utils/printLine";
+import { printLine } from "../../src/utils/printLine";
 
-const mockPrintLine = jest.spyOn(printLine, "printLine").mockImplementation();
+jest.mock("../../src/utils/printLine");
+jest.mock("../../src/classes/Card");
+jest.mock("../../src/classes/Deck");
+
+const mockPrintLine = printLine as jest.Mock;
+const MockCard = Card as jest.Mock;
+const MockDeck = Deck as jest.Mock;
 
 afterEach(() => {
-  mockPrintLine.mockReset();
+  jest.resetAllMocks();
 });
 
 describe("Participantクラス", () => {
   describe("deckゲッター", () => {
     it("deckを返す", () => {
-      const participant1 = new Participant(new Deck());
-      expect(participant1.deck).toBeInstanceOf(Deck);
+      const participant1 = new Participant(new MockDeck());
+
+      expect(participant1.deck).toBeInstanceOf(MockDeck);
     });
   });
 
   describe("deckセッター", () => {
     it("deckをセットする", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.deck = new Deck();
-      expect(participant1.deck).toBeInstanceOf(Deck);
+      const participant1 = new Participant(new MockDeck());
+      participant1.deck = new MockDeck();
+
+      expect(participant1.deck).toBeInstanceOf(MockDeck);
     });
   });
 
   describe("handゲッター", () => {
     it("handを返す", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 8, "8"),
-      ];
-      expect(participant1.hand).toEqual([
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 8, "8"),
-      ]);
+      const mockCard1 = new MockCard();
+      const mockCard2 = new MockCard();
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
+      expect(participant1.hand).toEqual([mockCard1, mockCard2]);
     });
   });
 
   describe("handセッター", () => {
     it("handをセットする。", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ];
-      expect(participant1.hand).toEqual([
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ]);
+      const mockCard1 = new MockCard();
+      const mockCard2 = new MockCard();
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
+      expect(participant1.hand).toEqual([mockCard1, mockCard2]);
     });
   });
 
   describe("sumゲッター", () => {
     it("handにエースが含まれないときは数字の合計をそのまま返す", () => {
-      const participant1 = new Participant(new Deck());
-      const participant2 = new Participant(new Deck());
-      const participant3 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 8, "8"),
-      ];
-      participant2.hand = [
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ];
-      participant3.hand = [
-        new Card(String.fromCodePoint(0x2660), 7, "7"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(2);
+      const mockCard2 = new MockCard(8);
+      const mockCard3 = new MockCard(9);
+      const participant1 = new Participant(new MockDeck());
+      const participant2 = new Participant(new MockDeck());
+      const participant3 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+      participant2.hand = [mockCard1, mockCard3];
+      participant3.hand = [mockCard2, mockCard3];
+
       expect(participant1.sum).toBe(10);
       expect(participant2.sum).toBe(11);
-      expect(participant3.sum).toBe(16);
+      expect(participant3.sum).toBe(17);
     });
     it("handにエースが1枚含まれるかつ数字の合計が11以下のとき、エースの数字は11として再計算される", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 10, "10"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(10);
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
       expect(participant1.sum).toBe(21);
     });
     it("handにエースが1枚含まれるかつ数字の合計が12以上のとき、数字の合計をそのまま返す", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(2);
+      const mockCard3 = new MockCard(9);
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2, mockCard3];
+
       expect(participant1.sum).toBe(12);
     });
     it("handにエースが複数枚含まれるかつ数字の合計が11以下のとき、エースを1枚選択しその数字を11に変更して合計を再計算する。これは数字の合計が12以上になるまで繰り返される", () => {
-      const participant1 = new Participant(new Deck());
-      const participant2 = new Participant(new Deck());
-      const participant3 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 8, "8"),
-      ];
-      participant2.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-        new Card(String.fromCodePoint(0x2660), 6, "6"),
-      ];
-      participant3.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-        new Card(String.fromCodePoint(0x2660), 7, "7"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(3);
+      const mockCard3 = new MockCard(6);
+      const mockCard4 = new MockCard(7);
+      const mockCard5 = new MockCard(8);
+      const participant1 = new Participant(new MockDeck());
+      const participant2 = new Participant(new MockDeck());
+      const participant3 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard1, mockCard5];
+      participant2.hand = [mockCard1, mockCard1, mockCard2, mockCard3];
+      participant3.hand = [mockCard1, mockCard1, mockCard3, mockCard4];
+
       expect(participant1.sum).toBe(20);
       expect(participant2.sum).toBe(21);
-      expect(participant3.sum).toBe(12);
+      expect(participant3.sum).toBe(15);
     });
   });
 
   describe("isBlackjackゲッター", () => {
     it("handの数字の合計が21かつhandの要素数が2のときtrueを返す。", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 10, "10"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(10);
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
       expect(participant1.isBlackjack).toBe(true);
     });
 
     it("それ以外のときはfalseを返す。", () => {
-      const participant1 = new Participant(new Deck());
-      const participant2 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 7, "7"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ];
-      participant2.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-        new Card(String.fromCodePoint(0x2660), 6, "6"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(3);
+      const mockCard3 = new MockCard(6);
+      const mockCard4 = new MockCard(7);
+      const mockCard5 = new MockCard(9);
+      const participant1 = new Participant(new MockDeck());
+      const participant2 = new Participant(new MockDeck());
+      participant1.hand = [mockCard4, mockCard5];
+      participant2.hand = [mockCard1, mockCard1, mockCard2, mockCard3];
+
       expect(participant1.isBlackjack).toBe(false);
       expect(participant2.isBlackjack).toBe(false);
     });
@@ -151,25 +168,34 @@ describe("Participantクラス", () => {
 
   describe("isBustedゲッターはhandがバストの条件を返すならtrueを、満たさないならfalseを返す", () => {
     it("handの数字の合計が21より大きいときtrueを返す。", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 5, "5"),
-        new Card(String.fromCodePoint(0x2660), 7, "7"),
-        new Card(String.fromCodePoint(0x2660), 10, "J"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(5);
+      const mockCard2 = new MockCard(7);
+      const mockCard3 = new MockCard(10);
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2, mockCard3];
+
       expect(participant1.isBusted).toBe(true);
     });
     it("それ以外のときはfalseを返す。", () => {
-      const participant1 = new Participant(new Deck());
-      const participant2 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 7, "7"),
-        new Card(String.fromCodePoint(0x2660), 9, "9"),
-      ];
-      participant2.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 10, "10"),
-      ];
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(7);
+      const mockCard3 = new MockCard(9);
+      const mockCard4 = new MockCard(10);
+      const participant1 = new Participant(new MockDeck());
+      const participant2 = new Participant(new MockDeck());
+      participant1.hand = [mockCard2, mockCard3];
+      participant2.hand = [mockCard1, mockCard4];
+
       expect(participant1.isBusted).toBe(false);
       expect(participant2.isBusted).toBe(false);
     });
@@ -177,49 +203,70 @@ describe("Participantクラス", () => {
 
   describe("deal()メソッド", () => {
     it("deck.draw()の返り値をhandにpush()する。これを2回行う。", () => {
-      const deck = new Deck();
-      const participant1 = new Participant(deck);
-      participant1.hand = [new Card(String.fromCodePoint(0x2660), 1, "A")];
-      const mockDraw = jest
-        .spyOn(deck, "draw")
-        .mockReturnValueOnce(new Card(String.fromCodePoint(0x2660), 2, "2"))
-        .mockReturnValueOnce(new Card(String.fromCodePoint(0x2660), 3, "3"));
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(2);
+      const mockCard3 = new MockCard(3);
+      MockDeck.mockImplementation(() => {
+        return {
+          draw: jest
+            .fn()
+            .mockReturnValueOnce(mockCard2)
+            .mockReturnValueOnce(mockCard3),
+        };
+      });
+      const mockDeck = new MockDeck();
+      const participant1 = new Participant(mockDeck);
+      participant1.hand = [mockCard1];
 
       participant1.deal();
-      expect(mockDraw).toHaveBeenCalledTimes(2);
-      expect(participant1.hand).toEqual([
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-        new Card(String.fromCodePoint(0x2660), 3, "3"),
-      ]);
+      expect(mockDeck.draw).toHaveBeenCalledTimes(2);
+      expect(participant1.hand).toEqual([mockCard1, mockCard2, mockCard3]);
     });
   });
 
   describe("hit()メソッド", () => {
     it("deck.draw()の返り値をhandにpush()する。", () => {
-      const deck = new Deck();
-      const participant1 = new Participant(deck);
-      participant1.hand = [new Card(String.fromCodePoint(0x2660), 1, "A")];
-      const mockDraw = jest
-        .spyOn(deck, "draw")
-        .mockReturnValue(new Card(String.fromCodePoint(0x2660), 2, "2"));
+      MockCard.mockImplementation((number) => {
+        return {
+          number,
+        };
+      });
+      const mockCard1 = new MockCard(1);
+      const mockCard2 = new MockCard(2);
+      MockDeck.mockImplementation(() => {
+        return {
+          draw: jest.fn().mockReturnValueOnce(mockCard2),
+        };
+      });
+      const mockDeck = new MockDeck();
+      const participant1 = new Participant(mockDeck);
+      participant1.hand = [mockCard1];
 
       participant1.hit();
-      expect(mockDraw).toHaveBeenCalled;
-      expect(participant1.hand).toEqual([
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2660), 2, "2"),
-      ]);
+      expect(mockDeck.draw).toHaveBeenCalledTimes(1);
+      expect(participant1.hand).toEqual([mockCard1, mockCard2]);
     });
   });
 
   describe("renderHand()メソッド", () => {
     it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に黒の絵札が含まれるとき", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2660), 1, "A"),
-        new Card(String.fromCodePoint(0x2663), 2, "2"),
-      ];
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(String.fromCodePoint(0x2660), 1, "A");
+      const mockCard2 = new MockCard(String.fromCodePoint(0x2663), 2, "2");
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
       participant1.renderHand("");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
@@ -231,15 +278,23 @@ describe("Participantクラス", () => {
       );
     });
     it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に赤の絵札が含まれるとき", () => {
-      const participant1 = new Participant(new Deck());
-      participant1.hand = [
-        new Card(String.fromCodePoint(0x2665), 10, "J"),
-        new Card(String.fromCodePoint(0x2666), 10, "Q"),
-      ];
-      participant1.renderHand("");
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(String.fromCodePoint(0x2665), 10, "J");
+      const mockCard2 = new MockCard(String.fromCodePoint(0x2666), 10, "Q");
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
+      participant1.renderHand("prefix");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        colors.red.bgWhite(` ${String.fromCodePoint(0x2665)} J `) +
+        colors.bold("prefix") +
+          colors.red.bgWhite(` ${String.fromCodePoint(0x2665)} J `) +
           "  " +
           colors.red.bgWhite(` ${String.fromCodePoint(0x2666)} Q `) +
           "  " +
