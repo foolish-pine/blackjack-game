@@ -1,10 +1,12 @@
-import * as printLine from "../../src/utils//printLine";
+import { printLine } from "../../src/utils//printLine";
 import { promptInput } from "../../src/utils/promptInput";
 
-const mockPrintLine = jest.spyOn(printLine, "printLine");
+jest.mock("../../src/utils/printLine");
+
+const mockPrintLine = printLine as jest.Mock;
 
 afterEach(() => {
-  mockPrintLine.mockReset();
+  jest.resetAllMocks();
 });
 
 describe("promptInput関数", () => {
