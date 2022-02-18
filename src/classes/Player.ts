@@ -77,25 +77,7 @@ export class Player extends Participant {
   }
 
   renderNewCard(): void {
-    let renderedCard = colors.bold("\nYour new card: ");
-    if (
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)
-    ) {
-      renderedCard += colors.red.bgWhite(
-        ` ${this.hand[this.hand.length - 1].symbol} ${
-          this.hand[this.hand.length - 1].rank
-        } `
-      );
-    } else {
-      renderedCard += colors.black.bgWhite(
-        ` ${this.hand[this.hand.length - 1].symbol} ${
-          this.hand[this.hand.length - 1].rank
-        } `
-      );
-    }
-    renderedCard += "\n";
-    printLine(renderedCard);
+    super.renderNewCard(`\nYour new card: `);
   }
 
   hit(): void {

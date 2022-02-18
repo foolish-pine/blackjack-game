@@ -75,4 +75,26 @@ export class Participant {
     renderedHand += "\n";
     printLine(renderedHand);
   }
+
+  renderNewCard(prefix: string): void {
+    let renderedCard = colors.bold(prefix);
+    if (
+      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
+      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)
+    ) {
+      renderedCard += colors.red.bgWhite(
+        ` ${this.hand[this.hand.length - 1].symbol} ${
+          this.hand[this.hand.length - 1].rank
+        } `
+      );
+    } else {
+      renderedCard += colors.black.bgWhite(
+        ` ${this.hand[this.hand.length - 1].symbol} ${
+          this.hand[this.hand.length - 1].rank
+        } `
+      );
+    }
+    renderedCard += "\n";
+    printLine(renderedCard);
+  }
 }

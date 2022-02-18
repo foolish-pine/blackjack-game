@@ -302,4 +302,47 @@ describe("Participantクラス", () => {
       );
     });
   });
+
+  describe("renderNewCard()メソッド", () => {
+    it("handの最後の要素に応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に黒の絵札が含まれるとき", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("club"), 1, "A");
+      const mockCard2 = new MockCard(cardSymbols.get("spade"), 2, "2");
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
+      participant1.renderNewCard("");
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.black.bgWhite(` ${cardSymbols.get("spade")} 2 `) + "\n"
+      );
+    });
+    it("handの最後の要素に応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に赤の絵札が含まれるとき", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("heart"), 10, "J");
+      const mockCard2 = new MockCard(cardSymbols.get("diamond"), 10, "Q");
+      const participant1 = new Participant(new MockDeck());
+      participant1.hand = [mockCard1, mockCard2];
+
+      participant1.renderNewCard("prefix");
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold("prefix") +
+          colors.red.bgWhite(` ${cardSymbols.get("diamond")} Q `) +
+          "\n"
+      );
+    });
+  });
 });

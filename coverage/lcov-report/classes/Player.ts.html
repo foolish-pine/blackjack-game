@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.13% </span>
+                <span class="strong">87.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>86/116</span>
+                <span class='fraction'>86/98</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.13% </span>
+                <span class="strong">87.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>86/116</span>
+                <span class='fraction'>86/98</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -161,25 +161,7 @@
 <a name='L96'></a><a href='#L96'>96</a>
 <a name='L97'></a><a href='#L97'>97</a>
 <a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a>
-<a name='L103'></a><a href='#L103'>103</a>
-<a name='L104'></a><a href='#L104'>104</a>
-<a name='L105'></a><a href='#L105'>105</a>
-<a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a>
-<a name='L108'></a><a href='#L108'>108</a>
-<a name='L109'></a><a href='#L109'>109</a>
-<a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a>
-<a name='L114'></a><a href='#L114'>114</a>
-<a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -258,24 +240,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -374,25 +338,7 @@ export class Player extends Participant {
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  renderNewCard(): void {</span>
-<span class="cstat-no" title="statement not covered" >    let renderedCard = colors.bold("\nYour new card: ");</span>
-<span class="cstat-no" title="statement not covered" >    if (</span>
-<span class="cstat-no" title="statement not covered" >      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||</span>
-<span class="cstat-no" title="statement not covered" >      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)</span>
-<span class="cstat-no" title="statement not covered" >    ) {</span>
-<span class="cstat-no" title="statement not covered" >      renderedCard += colors.red.bgWhite(</span>
-<span class="cstat-no" title="statement not covered" >        ` ${this.hand[this.hand.length - 1].symbol} ${</span>
-<span class="cstat-no" title="statement not covered" >          this.hand[this.hand.length - 1].rank</span>
-<span class="cstat-no" title="statement not covered" >        } `</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" >    } else {</span>
-<span class="cstat-no" title="statement not covered" >      renderedCard += colors.black.bgWhite(</span>
-<span class="cstat-no" title="statement not covered" >        ` ${this.hand[this.hand.length - 1].symbol} ${</span>
-<span class="cstat-no" title="statement not covered" >          this.hand[this.hand.length - 1].rank</span>
-<span class="cstat-no" title="statement not covered" >        } `</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    renderedCard += "\n";</span>
-<span class="cstat-no" title="statement not covered" >    printLine(renderedCard);</span>
+<span class="cstat-no" title="statement not covered" >    super.renderNewCard(`\nYour new card: `);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
 <span class="fstat-no" title="function not covered" >  hit(): void {</span>
@@ -418,7 +364,7 @@ export class Player extends Participant {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Feb 18 2022 10:45:19 GMT+0900 (GMT+09:00)
+                at Fri Feb 18 2022 13:03:57 GMT+0900 (GMT+09:00)
             </div>
         <script src="../prettify.js"></script>
         <script>
