@@ -1,6 +1,6 @@
 import colors from "colors";
 
-import { Card } from "../../src/classes/Card";
+import { Card, cardSymbols } from "../../src/classes/Card";
 import { Deck } from "../../src/classes/Deck";
 import { Participant } from "../../src/classes/Participant";
 
@@ -262,17 +262,17 @@ describe("Participantクラス", () => {
           rank,
         };
       });
-      const mockCard1 = new MockCard(String.fromCodePoint(0x2660), 1, "A");
-      const mockCard2 = new MockCard(String.fromCodePoint(0x2663), 2, "2");
+      const mockCard1 = new MockCard(cardSymbols.get("club"), 1, "A");
+      const mockCard2 = new MockCard(cardSymbols.get("spade"), 2, "2");
       const participant1 = new Participant(new MockDeck());
       participant1.hand = [mockCard1, mockCard2];
 
       participant1.renderHand("");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        colors.black.bgWhite(` ${String.fromCodePoint(0x2660)} A `) +
+        colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
           "  " +
-          colors.black.bgWhite(` ${String.fromCodePoint(0x2663)} 2 `) +
+          colors.black.bgWhite(` ${cardSymbols.get("spade")} 2 `) +
           "  " +
           "\n"
       );
@@ -285,8 +285,8 @@ describe("Participantクラス", () => {
           rank,
         };
       });
-      const mockCard1 = new MockCard(String.fromCodePoint(0x2665), 10, "J");
-      const mockCard2 = new MockCard(String.fromCodePoint(0x2666), 10, "Q");
+      const mockCard1 = new MockCard(cardSymbols.get("heart"), 10, "J");
+      const mockCard2 = new MockCard(cardSymbols.get("diamond"), 10, "Q");
       const participant1 = new Participant(new MockDeck());
       participant1.hand = [mockCard1, mockCard2];
 
@@ -294,9 +294,9 @@ describe("Participantクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold("prefix") +
-          colors.red.bgWhite(` ${String.fromCodePoint(0x2665)} J `) +
+          colors.red.bgWhite(` ${cardSymbols.get("heart")} J `) +
           "  " +
-          colors.red.bgWhite(` ${String.fromCodePoint(0x2666)} Q `) +
+          colors.red.bgWhite(` ${cardSymbols.get("diamond")} Q `) +
           "  " +
           "\n"
       );
