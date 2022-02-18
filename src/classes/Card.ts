@@ -85,7 +85,7 @@ export class Card {
   }
 
   get number(): number {
-    return this._number >= 11 ? 10 : this._number;
+    return this._number;
   }
 
   get rank(): string {
