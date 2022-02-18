@@ -82,14 +82,14 @@ export class Player extends Participant {
 
   hit(): void {
     this.hasHit = true;
-    this.hand.push(this.deck.draw());
+    super.hit();
   }
 
   doubleDown(): void {
     this.hasDoubleDowned = true;
     this.money -= this.bet;
     this.bet *= 2;
-    this.hand.push(this.deck.draw());
+    super.hit();
   }
 
   stand(): void {
