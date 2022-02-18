@@ -79,8 +79,8 @@ export class Participant {
   renderNewCard(prefix: string): void {
     let renderedCard = colors.bold(prefix);
     if (
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)
+      this.hand[this.hand.length - 1].symbol === cardSymbols.get("heart") ||
+      this.hand[this.hand.length - 1].symbol === cardSymbols.get("diamond")
     ) {
       renderedCard += colors.red.bgWhite(
         ` ${this.hand[this.hand.length - 1].symbol} ${
