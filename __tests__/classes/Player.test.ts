@@ -1,5 +1,6 @@
 import colors from "colors";
 
+import { Card, cardSymbols } from "../../src/classes/Card";
 import { Deck } from "../../src/classes/Deck";
 import { Participant } from "../../src/classes/Participant";
 import { Player } from "../../src/classes/Player";
@@ -7,10 +8,12 @@ import { Player } from "../../src/classes/Player";
 import { printLine } from "../../src/utils/printLine";
 
 jest.mock("../../src/utils/printLine");
+jest.mock("../../src/classes/Card");
 jest.mock("../../src/classes/Deck");
 jest.mock("../../src/classes/Participant");
 
 const mockPrintLine = printLine as jest.Mock;
+const MockCard = Card as jest.Mock;
 const MockDeck = Deck as jest.Mock;
 const MockParticipant = Participant as jest.Mock;
 
@@ -131,13 +134,53 @@ describe("Playerクラス", () => {
   });
 
   describe("renderHand()メソッド", () => {
-    it("親クラスのrenderHand()メソッドを文字列を文字列`\nYou:    `を引数にして呼び出す", () => {
-      const renderHand = jest.fn();
-      MockParticipant.prototype.renderHand = renderHand;
+    it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に黒の絵札が含まれるとき", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("club"), 1, "A");
+      const mockCard2 = new MockCard(cardSymbols.get("spade"), 2, "2");
       const player = new Player(new MockDeck());
+      player.hand = [mockCard1, mockCard2];
 
       player.renderHand();
-      expect(renderHand).toHaveBeenCalledWith(`\nYou:    `);
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold(`\nYou:    `) +
+          colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
+          "  " +
+          colors.black.bgWhite(` ${cardSymbols.get("spade")} 2 `) +
+          "  " +
+          "\n"
+      );
+    });
+    it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に赤の絵札が含まれるとき", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("heart"), 10, "J");
+      const mockCard2 = new MockCard(cardSymbols.get("diamond"), 10, "Q");
+      const player = new Player(new MockDeck());
+      player.hand = [mockCard1, mockCard2];
+
+      player.renderHand();
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold(`\nYou:    `) +
+          colors.red.bgWhite(` ${cardSymbols.get("heart")} J `) +
+          "  " +
+          colors.red.bgWhite(` ${cardSymbols.get("diamond")} Q `) +
+          "  " +
+          "\n"
+      );
     });
   });
 

@@ -6,29 +6,30 @@ import { Deck } from "./Deck";
 import { printLine } from "../utils/printLine";
 
 export class Participant {
-  private _hand: Card[];
+  private _deck: Deck;
+  private _hand: Card[] = [];
 
-  constructor(private _deck: Deck) {
-    this._hand = [];
-  }
-
-  get deck(): Deck {
-    return this._deck;
-  }
-
-  set deck(deck: Deck) {
+  constructor(deck: Deck) {
     this._deck = deck;
   }
 
-  get hand(): Card[] {
+  get deck() {
+    return this._deck;
+  }
+
+  set deck(deck) {
+    this._deck = deck;
+  }
+
+  get hand() {
     return this._hand;
   }
 
-  set hand(cards: Card[]) {
+  set hand(cards) {
     this._hand = cards;
   }
 
-  get sum(): number {
+  get sum() {
     let sum = this.hand.reduce((sum, card) => sum + card.number, 0);
     let aceNum = this.hand.filter((card) => card.number === 1).length;
     while (sum <= 11 && aceNum >= 1) {
@@ -38,45 +39,24 @@ export class Participant {
     return sum;
   }
 
-  get isBlackjack(): boolean {
+  get isBlackjack() {
     return this.sum === 21 && this.hand.length === 2;
   }
 
-  get isBusted(): boolean {
+  get isBusted() {
     return this.sum > 21;
   }
 
-  deal(): void {
+  deal() {
     this.hand.push(this.deck.draw());
     this.hand.push(this.deck.draw());
   }
 
-  hit(): void {
+  hit() {
     this.hand.push(this.deck.draw());
   }
 
-  renderHand(prefix: string): void {
-    let renderedHand = colors.bold(prefix);
-    for (let i = 0; i < this.hand.length; i++) {
-      if (
-        this.hand[i].symbol === cardSymbols.get("heart") ||
-        this.hand[i].symbol === cardSymbols.get("diamond")
-      ) {
-        renderedHand += colors.red.bgWhite(
-          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
-        );
-      } else {
-        renderedHand += colors.black.bgWhite(
-          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
-        );
-      }
-      renderedHand += "  ";
-    }
-    renderedHand += "\n";
-    printLine(renderedHand);
-  }
-
-  renderNewCard(prefix: string): void {
+  renderNewCard(prefix: string) {
     let renderedCard = colors.bold(prefix);
     if (
       this.hand[this.hand.length - 1].symbol === cardSymbols.get("heart") ||

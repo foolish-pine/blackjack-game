@@ -1,7 +1,6 @@
 import figlet from "figlet";
 import colors from "colors";
 
-import { Card } from "./Card";
 import { Deck } from "./Deck";
 import { Dealer } from "./Dealer";
 import { Player } from "./Player";
@@ -10,21 +9,18 @@ import { printLine } from "../utils/printLine";
 import { promptInput } from "../utils/promptInput";
 import { promptSelect } from "../utils/promptSelect";
 
-const playerActions = ["h", "d", "s"] as const;
+export const playerActions = ["h", "d", "s"] as const;
+export const playerActionsExceptDoubleDown = ["h", "s"] as const;
 type playerAction = typeof playerActions[number];
+type playerActionExceptDoubleDown =
+  typeof playerActionsExceptDoubleDown[number];
 
 export class Game {
-  private deck: Deck;
-  private dealer: Dealer;
-  private player: Player;
+  private deck = new Deck();
+  private dealer = new Dealer(this.deck);
+  private player = new Player(this.deck);
 
-  constructor() {
-    this.deck = new Deck();
-    this.dealer = new Dealer(this.deck);
-    this.player = new Player(this.deck);
-  }
-
-  private async renderTitle(): Promise<void> {
+  private async renderTitle() {
     // タイトルのアスキーアートを表示する
     printLine(
       `${colors.rainbow(
@@ -37,23 +33,121 @@ export class Game {
     );
   }
 
-  private validateBet(inputBet: string): boolean {
+  private reset() {
+    this.deck = new Deck();
+    this.dealer.deck = this.deck;
+    this.dealer.clearStatus();
+    this.player.deck = this.deck;
+    this.player.clearStatus();
+  }
+
+  private deal() {
+    this.dealer.deal();
+    this.player.deal();
+    this.dealer.renderHand();
+    this.player.renderHand();
+  }
+
+  private validateBet(inputBet: string) {
     if (
       isNaN(Number(inputBet)) ||
       !Number.isInteger(Number(inputBet)) ||
       Number(inputBet) <= 0
     ) {
-      printLine("\nPlease input a positive integer.");
+      printLine(`\nPlease input a positive integer.`);
       return false;
     } else if (Number(inputBet) > this.player.money) {
-      printLine("\nPlease bet an amount of money you can.");
+      printLine(`\nPlease bet an amount of money you can.`);
       return false;
     } else {
       return true;
     }
   }
 
-  private checkResult(): void {
+  private async promptInputBet() {
+    printLine(`\n${colors.bold("Set Your Bet.")}`);
+    return await promptInput(`\n> $`);
+  }
+
+  private async setBet() {
+    // 賭け金を入力するプロンプトを表示する
+    let inputBet = await this.promptInputBet();
+
+    // 入力値をバリデーションする。バリデーションをパスしなかった場合、もう一度入力を促す
+    while (!this.validateBet(inputBet)) {
+      inputBet = await this.promptInputBet();
+    }
+    this.player.bet = Number(inputBet);
+    this.player.money -= this.player.bet;
+    printLine(colors.bold.yellow(`\nYour bet: $${this.player.bet}`));
+    await promptInput(colors.bold(`\n(Enter)`));
+  }
+
+  private get isPlayerOnAction() {
+    return (
+      !this.player.isBlackjack &&
+      !this.player.isBusted &&
+      !this.player.isStanding &&
+      !this.player.hasDoubleDowned &&
+      this.player.sum < 21
+    );
+  }
+
+  private async promptInputAction() {
+    return this.player.hasHit || this.player.money - this.player.bet < 0
+      ? await promptSelect<playerActionExceptDoubleDown>(
+          `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
+            "Hit[h]"
+          )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+          playerActionsExceptDoubleDown
+        )
+      : await promptSelect<playerAction>(
+          `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
+            "Hit[h]"
+          )} ${colors.bold("/")} ${colors.bold.cyan(
+            "DoubleDown[d]"
+          )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+          playerActions
+        );
+  }
+
+  private async doPlayerAction(inputAction: playerAction) {
+    if (inputAction === "h") {
+      this.player.hit();
+      printLine(colors.bold.green(`\nYou hit.`));
+      await promptInput(colors.bold(`\n(Enter)`));
+      this.player.renderNewCard();
+    } else if (inputAction === "d") {
+      this.player.doubleDown();
+      printLine(colors.bold.cyan(`\nYou doubled down.`));
+      await promptInput(colors.bold(`\n(Enter)`));
+      this.player.renderNewCard();
+    } else if (inputAction === "s") {
+      this.player.stand();
+      printLine(colors.bold.yellow(`\nYou stand.`));
+      await promptInput(colors.bold(`\n(Enter)`));
+    }
+    this.dealer.renderHand();
+    this.player.renderHand();
+    await promptInput(colors.bold(`\n(Enter)`));
+  }
+
+  private get isDealerOnAction() {
+    return (
+      (this.dealer.sum === 17 && this.dealer.hasAce) || this.dealer.sum < 17
+    );
+  }
+
+  private async doDealerAction() {
+    this.dealer.hit();
+    this.dealer.renderNewCard();
+    this.dealer.renderHand();
+    this.player.renderHand();
+    await promptInput(colors.bold(`\n(Enter)`));
+  }
+
+  private checkResult() {
+    // FIXME: 条件分岐リファクタリングする
     if (this.dealer.isBusted) {
       this.player.money += 2 * this.player.bet;
       printLine(`\n${colors.bold.red("Dealer Busted")}`);
@@ -126,85 +220,23 @@ export class Game {
     this.player.renderMoney();
   }
 
-  private reset(): void {
-    this.deck = new Deck();
-    this.dealer.deck = this.deck;
-    this.dealer.clearStatus();
-    this.player.deck = this.deck;
-    this.player.clearStatus();
-  }
-
-  private async play(): Promise<void> {
+  private async play() {
     // 山札とディーラー、プレイヤーのステータスをリセットする
     this.reset();
 
     // プレイヤーの所持金を表示する
     this.player.renderMoney();
 
-    // 賭け金を入力するプロンプトを表示する
-    printLine(`\n${colors.bold("Set Your Bet.")}`);
-    let inputBet = await promptInput(`\n> $`);
-
-    // 入力値をバリデーションする。バリデーションをパスしなかった場合、もう一度入力を促す
-    while (!this.validateBet(inputBet)) {
-      printLine(`\n${colors.bold("Set Your Bet.")}`);
-      inputBet = await promptInput(`\n> $`);
-    }
-    this.player.bet = Number(inputBet);
-    this.player.money -= this.player.bet;
-    printLine(colors.bold.yellow(`\nYour bet: $${this.player.bet}`));
-    await promptInput(colors.bold("\n(Enter)"));
+    // betをセットする
+    await this.setBet();
 
     // ディーラーとプレイヤーにカードを配り、ゲームを開始する
-    this.dealer.deal();
-    this.player.deal();
-    this.dealer.renderHand();
-    this.player.renderHand();
+    this.deal();
 
-    while (
-      !this.player.isBlackjack &&
-      !this.player.isBusted &&
-      !this.player.isStanding &&
-      !this.player.hasDoubleDowned &&
-      this.player.sum < 21
-    ) {
-      // プレイヤーのアクションを入力するプロンプトを表示する
-      let inputAction = await promptSelect<playerAction>(
-        this.player.hasHit
-          ? `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-              "Hit[h]"
-            )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`
-          : `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-              "Hit[h]"
-            )} ${colors.bold("/")} ${colors.bold.cyan(
-              "DoubleDown[d]"
-            )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
-        playerActions
-      );
-
-      if (inputAction === "h") {
-        this.player.hit();
-        printLine(colors.bold.green("\nYou hit."));
-        await promptInput(colors.bold("\n(Enter)"));
-        this.player.renderNewCard();
-      } else if (inputAction === "d" && !this.player.hasHit) {
-        if (this.player.money - this.player.bet < 0) {
-          printLine(
-            colors.bold("You can't double down. You don't have enough money.")
-          );
-        }
-        this.player.doubleDown();
-        printLine(colors.bold.cyan("\nYou doubled down."));
-        await promptInput(colors.bold("\n(Enter)"));
-        this.player.renderNewCard();
-      } else if (inputAction === "s") {
-        this.player.stand();
-        printLine(colors.bold.yellow("\nYou stand."));
-        await promptInput(colors.bold("\n(Enter)"));
-      }
-      this.dealer.renderHand();
-      this.player.renderHand();
-      await promptInput(colors.bold("\n(Enter)"));
+    while (this.isPlayerOnAction) {
+      // プレイヤーのアクションを入力する
+      const inputAction = await this.promptInputAction();
+      await this.doPlayerAction(inputAction);
     }
 
     if (this.player.isBusted) {
@@ -217,33 +249,25 @@ export class Game {
     this.player.renderHand();
     await promptInput(colors.bold("\n(Enter)"));
 
-    while (
-      (this.dealer.sum === 17 &&
-        this.dealer.hand.filter((card: Card) => card.rank === "A").length >=
-          1) ||
-      this.dealer.sum < 17
-    ) {
+    while (this.isDealerOnAction) {
       // ディーラーの手札の合計が17かつ手札にエースが含まれるとき、または17未満のとき、条件を満たさなくなるまで以下を繰り返す
-      this.dealer.hit();
-      this.dealer.renderNewCard();
-      this.dealer.renderHand();
-      this.player.renderHand();
-      await promptInput(colors.bold("\n(Enter)"));
+      await this.doDealerAction();
     }
 
     this.checkResult();
   }
 
-  async start(): Promise<void> {
+  async start() {
     await this.renderTitle();
+    await promptInput(colors.bold(`\nPlease Enter to start`));
     while (this.player.money > 0) {
       await this.play();
       if (this.player.money > 0) {
-        printLine(colors.bold("\nPlease Enter to start next game"));
+        printLine(colors.bold(`\nPlease Enter to start next game`));
         await promptInput(colors.bold("\n(Enter)"));
       }
     }
     printLine(colors.bold("\nGame Over!!"));
-    process.exit();
+    process.exit(0);
   }
 }

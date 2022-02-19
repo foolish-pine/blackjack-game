@@ -1,6 +1,6 @@
 import colors from "colors";
 
-import { cardSymbols } from "./Card";
+import { Card, cardSymbols } from "./Card";
 import { Deck } from "./Deck";
 import { Participant } from "./Participant";
 
@@ -13,7 +13,7 @@ export class Dealer extends Participant {
     super(deck);
   }
 
-  get isSecondCardOpen(): boolean {
+  get isSecondCardOpen() {
     return this._isSecondCardOpen;
   }
 
@@ -21,12 +21,16 @@ export class Dealer extends Participant {
     this._isSecondCardOpen = isSecondCardOpen;
   }
 
-  clearStatus(): void {
+  get hasAce() {
+    return this.hand.filter((card) => card.rank === "A").length >= 1;
+  }
+
+  clearStatus() {
     this.hand = [];
     this.isSecondCardOpen = false;
   }
 
-  renderSecondCard(): void {
+  renderSecondCard() {
     this.isSecondCardOpen = true;
 
     let renderedCard = colors.bold(`\nDealer's second card: `);
@@ -46,11 +50,45 @@ export class Dealer extends Participant {
     printLine(renderedCard);
   }
 
-  renderHand(): void {
-    super.renderHand(`\nDealer:    `);
+  renderHand() {
+    let renderedHand = colors.bold(`\nDealer: `);
+    if (this.isSecondCardOpen) {
+      for (let i = 0; i < this.hand.length; i++) {
+        if (
+          this.hand[i].symbol === cardSymbols.get("heart") ||
+          this.hand[i].symbol === cardSymbols.get("diamond")
+        ) {
+          renderedHand += colors.red.bgWhite(
+            ` ${this.hand[i].symbol} ${this.hand[i].rank} `
+          );
+        } else {
+          renderedHand += colors.black.bgWhite(
+            ` ${this.hand[i].symbol} ${this.hand[i].rank} `
+          );
+        }
+        renderedHand += "  ";
+      }
+    } else {
+      if (
+        this.hand[0].symbol === cardSymbols.get("heart") ||
+        this.hand[0].symbol === cardSymbols.get("diamond")
+      ) {
+        renderedHand += colors.red.bgWhite(
+          ` ${this.hand[0].symbol} ${this.hand[0].rank} `
+        );
+      } else {
+        renderedHand += colors.black.bgWhite(
+          ` ${this.hand[0].symbol} ${this.hand[0].rank} `
+        );
+      }
+      renderedHand += "  ";
+      renderedHand += colors.black.bgWhite(" ??? ");
+    }
+    renderedHand += "\n";
+    printLine(renderedHand);
   }
 
-  renderNewCard(): void {
+  renderNewCard() {
     super.renderNewCard(`\nDealer's new card: `);
   }
 }

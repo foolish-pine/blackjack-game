@@ -39,6 +39,31 @@ describe("Dealerクラス", () => {
     });
   });
 
+  describe("hasAceゲッター", () => {
+    it("handにrankがAのcardが存在するとき、trueを返す", () => {
+      MockCard.mockImplementation((rank) => {
+        return {
+          rank,
+        };
+      });
+      const dealer = new Dealer(new MockDeck());
+      dealer.hand = [new MockCard("A"), new MockCard("2")];
+
+      expect(dealer.hasAce).toBe(true);
+    });
+    it("handにrankがAのcardが存在しないとき、falseを返す", () => {
+      MockCard.mockImplementation((rank) => {
+        return {
+          rank,
+        };
+      });
+      const dealer = new Dealer(new MockDeck());
+      dealer.hand = [new MockCard("2")];
+
+      expect(dealer.hasAce).toBe(false);
+    });
+  });
+
   describe("clearStatus()メソッド", () => {
     it("handに空配列を、isSecondCardOpenにfalseを代入する。", () => {
       const dealer = new Dealer(new MockDeck());
@@ -97,13 +122,78 @@ describe("Dealerクラス", () => {
   });
 
   describe("renderHand()メソッド", () => {
-    it("親クラスのrenderHand()メソッドを文字列を文字列`\nDealer:    `を引数にして呼び出す", () => {
-      const renderHand = jest.fn();
-      MockParticipant.prototype.renderHand = renderHand;
+    it("isSecondCardOpenがtrueのとき、handの要素をすべて表示する", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("club"), 1, "A");
+      const mockCard2 = new MockCard(cardSymbols.get("heart"), 2, "2");
       const dealer = new Dealer(new MockDeck());
+      dealer.hand = [mockCard1, mockCard2];
+      dealer.isSecondCardOpen = true;
 
       dealer.renderHand();
-      expect(renderHand).toHaveBeenCalledWith(`\nDealer:    `);
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold(`\nDealer: `) +
+          colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
+          "  " +
+          colors.red.bgWhite(` ${cardSymbols.get("heart")} 2 `) +
+          "  " +
+          "\n"
+      );
+    });
+    it("isSecondCardOpenがfalseのとき、handの最初の要素を表示し、2番目の要素の代わりに???を表示する", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("club"), 1, "A");
+      const mockCard2 = new MockCard(cardSymbols.get("spade"), 2, "2");
+      const dealer = new Dealer(new MockDeck());
+      dealer.hand = [mockCard1, mockCard2];
+      dealer.isSecondCardOpen = false;
+
+      dealer.renderHand();
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold(`\nDealer: `) +
+          colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
+          "  " +
+          colors.black.bgWhite(" ??? ") +
+          "\n"
+      );
+    });
+    it("isSecondCardOpenがfalseのとき、handの最初の要素を表示し、2番目の要素の代わりに???を表示する", () => {
+      MockCard.mockImplementation((symbol, number, rank) => {
+        return {
+          symbol,
+          number,
+          rank,
+        };
+      });
+      const mockCard1 = new MockCard(cardSymbols.get("heart"), 1, "A");
+      const mockCard2 = new MockCard(cardSymbols.get("spade"), 2, "2");
+      const dealer = new Dealer(new MockDeck());
+      dealer.hand = [mockCard1, mockCard2];
+      dealer.isSecondCardOpen = false;
+
+      dealer.renderHand();
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold(`\nDealer: `) +
+          colors.red.bgWhite(` ${cardSymbols.get("heart")} A `) +
+          "  " +
+          colors.black.bgWhite(" ??? ") +
+          "\n"
+      );
     });
   });
 

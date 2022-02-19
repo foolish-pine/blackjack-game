@@ -2,10 +2,9 @@ import { cardSymbols, cardNumberAndRanks } from "./Card";
 import { Card } from "./Card";
 
 export class Deck {
-  private _cards: Card[];
+  private _cards: Card[] = [];
 
   constructor() {
-    this._cards = [];
     cardSymbols.forEach((cardSymbol) => {
       cardNumberAndRanks.forEach((cardNumberAndRank) => {
         this._cards.push(
@@ -17,11 +16,11 @@ export class Deck {
     this.shuffle();
   }
 
-  get cards(): Card[] {
+  get cards() {
     return this._cards;
   }
 
-  shuffle(): void {
+  shuffle() {
     const cardNum = this.cards.length;
     for (let i = cardNum - 1; i >= 0; i--) {
       const randomIndex = Math.floor(Math.random() * (i + 1));
@@ -32,7 +31,7 @@ export class Deck {
     }
   }
 
-  draw(): Card {
+  draw() {
     return this.cards.pop() as Card;
   }
 }
