@@ -88,9 +88,9 @@ export class Player extends Participant {
           ` ${this.hand[i].symbol} ${this.hand[i].rank} `
         );
       }
-      renderedHand += "  ";
+      renderedHand += `  `;
     }
-    renderedHand += "\n";
+    renderedHand += `\n`;
     printLine(renderedHand);
   }
 

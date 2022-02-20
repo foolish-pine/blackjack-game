@@ -152,10 +152,10 @@ describe("Playerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nYou:    `) +
           colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
-          "  " +
+          `  ` +
           colors.black.bgWhite(` ${cardSymbols.get("spade")} 2 `) +
-          "  " +
-          "\n"
+          `  ` +
+          `\n`
       );
     });
     it("handに応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に赤の絵札が含まれるとき", () => {
@@ -176,10 +176,10 @@ describe("Playerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nYou:    `) +
           colors.red.bgWhite(` ${cardSymbols.get("heart")} J `) +
-          "  " +
+          `  ` +
           colors.red.bgWhite(` ${cardSymbols.get("diamond")} Q `) +
-          "  " +
-          "\n"
+          `  ` +
+          `\n`
       );
     });
   });
