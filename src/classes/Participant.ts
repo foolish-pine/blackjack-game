@@ -74,7 +74,7 @@ export class Participant {
         } `
       );
     }
-    renderedCard += "\n";
+    renderedCard += `\n`;
     printLine(renderedCard);
   }
 }

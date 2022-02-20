@@ -289,9 +289,9 @@ describe("Participantクラス", () => {
       participant1.renderNewCard("prefix");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        colors.bold("prefix") +
+        colors.bold(`prefix`) +
           colors.red.bgWhite(` ${cardSymbols.get("diamond")} Q `) +
-          "\n"
+          `\n`
       );
     });
   });
