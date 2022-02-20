@@ -46,7 +46,7 @@ export class Dealer extends Participant {
         ` ${this.hand[1].symbol} ${this.hand[1].rank} `
       );
     }
-    renderedCard += "\n";
+    renderedCard += `\n`;
     printLine(renderedCard);
   }
 
@@ -66,7 +66,7 @@ export class Dealer extends Participant {
             ` ${this.hand[i].symbol} ${this.hand[i].rank} `
           );
         }
-        renderedHand += "  ";
+        renderedHand += `  `;
       }
     } else {
       if (
@@ -81,10 +81,10 @@ export class Dealer extends Participant {
           ` ${this.hand[0].symbol} ${this.hand[0].rank} `
         );
       }
-      renderedHand += "  ";
-      renderedHand += colors.black.bgWhite(" ??? ");
+      renderedHand += `  `;
+      renderedHand += colors.black.bgWhite(` ??? `);
     }
-    renderedHand += "\n";
+    renderedHand += `\n`;
     printLine(renderedHand);
   }
 

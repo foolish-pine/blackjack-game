@@ -94,7 +94,7 @@ describe("Dealerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nDealer's second card: `) +
           colors.black.bgWhite(` ${cardSymbols.get("spade")} 2 `) +
-          "\n"
+          `\n`
       );
     });
     it("isSecondCardOpenにtrueを代入する。handのインデックス1の要素に応じた文字列を生成し、その文字列を引数にしてprintLine関数を呼び出す。手札に赤の絵札が含まれるとき", () => {
@@ -116,7 +116,7 @@ describe("Dealerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nDealer's second card: `) +
           colors.red.bgWhite(` ${cardSymbols.get("diamond")} Q `) +
-          "\n"
+          `\n`
       );
     });
   });
@@ -141,10 +141,10 @@ describe("Dealerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nDealer: `) +
           colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
-          "  " +
+          `  ` +
           colors.red.bgWhite(` ${cardSymbols.get("heart")} 2 `) +
-          "  " +
-          "\n"
+          `  ` +
+          `\n`
       );
     });
     it("isSecondCardOpenがfalseのとき、handの最初の要素を表示し、2番目の要素の代わりに???を表示する", () => {
@@ -166,9 +166,9 @@ describe("Dealerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nDealer: `) +
           colors.black.bgWhite(` ${cardSymbols.get("club")} A `) +
-          "  " +
-          colors.black.bgWhite(" ??? ") +
-          "\n"
+          `  ` +
+          colors.black.bgWhite(` ??? `) +
+          `\n`
       );
     });
     it("isSecondCardOpenがfalseのとき、handの最初の要素を表示し、2番目の要素の代わりに???を表示する", () => {
@@ -190,9 +190,9 @@ describe("Dealerクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(
         colors.bold(`\nDealer: `) +
           colors.red.bgWhite(` ${cardSymbols.get("heart")} A `) +
-          "  " +
-          colors.black.bgWhite(" ??? ") +
-          "\n"
+          `  ` +
+          colors.black.bgWhite(` ??? `) +
+          `\n`
       );
     });
   });
