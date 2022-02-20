@@ -445,9 +445,209 @@ describe("Gameクラス", () => {
   });
 
   describe("checkResult()メソッド", () => {
-    it("", async () => {
-      // TODO: テスト書く
+    it("dealer.isBustedがtrueのとき、player.betを2倍した値をplayer.moneyに足す。printLine関数でテキストを表示する", () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBusted: true,
+        };
+      });
       const game = new Game();
+      game["player"].money = 1000;
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(game["player"].money).toBe(1200);
+      expect(mockPrintLine).toHaveBeenCalledTimes(3);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        `\n${colors.bold.red("Dealer Busted")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        `\n${colors.bold.red("You Win!!")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        3,
+        `\n` + colors.bold.red(`You won `) + colors.bold.red(`$100`)
+      );
+    });
+    it("player.isBustedがtrueのとき、printLine関数でテキストを表示する", () => {
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBusted: true,
+        };
+      });
+      const game = new Game();
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(mockPrintLine).toHaveBeenCalledTimes(3);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        `\n${colors.bold.blue("You Busted")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        `\n${colors.bold.blue("You Lose")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        3,
+        `\n` + colors.bold.blue(`You lost `) + colors.bold.blue(`$100`)
+      );
+    });
+    it("player.isBlackjackとplayer.isBlackjackがともにtrueのとき、player.betの値をplayer.moneyに足す。printLine関数でテキストを表示する", async () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBlackjack: true,
+        };
+      });
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBlackjack: true,
+        };
+      });
+      const game = new Game();
+      game["player"].money = 1000;
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(game["player"].money).toBe(1100);
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(`\n${colors.bold("Draw")}`);
+    });
+    it("dealer.isBlackjackがtrueでplayer.isBlackjackがfalseのとき、printLine関数でテキストを表示する", async () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBlackjack: true,
+        };
+      });
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+        };
+      });
+      const game = new Game();
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(mockPrintLine).toHaveBeenCalledTimes(2);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        `\n${colors.bold.blue("You Lose")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        `\n` + colors.bold.blue(`You lost `) + colors.bold.blue(`$100`)
+      );
+    });
+    it("dealer.isBlackjackがfalseでplayer.isBlackjackがtrueのとき、printLine関数でテキストを表示する", async () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+        };
+      });
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBlackjack: true,
+        };
+      });
+      const game = new Game();
+      game["player"].money = 1000;
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(game["player"].money).toBe(1250);
+      expect(mockPrintLine).toHaveBeenCalledTimes(3);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        `\n${colors.rainbow("B L A C K J A C K")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        `\n${colors.bold.red("You Win!!")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        3,
+        `\n` + colors.bold.red(`You won `) + colors.bold.red(`$150`)
+      );
+    });
+    it("player.isBlackjackとplayer.isBlackjackがともにfalseかつdealer.sumがplayer.sumより大きいとき、printLine関数でテキストを表示する", async () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+          sum: 20,
+        };
+      });
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+          sum: 19,
+        };
+      });
+      const game = new Game();
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(mockPrintLine).toHaveBeenCalledTimes(2);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        `\n${colors.bold.blue("You Lose")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        `\n` + colors.bold.blue("You lost ") + colors.bold.blue(`$100`)
+      );
+    });
+    it("player.isBlackjackとplayer.isBlackjackがともにfalseかつdealer.sumがplayer.sumより小さいとき、player.betを2倍した値をplayer.moneyに足す。printLine関数でテキストを表示する", async () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+          sum: 19,
+        };
+      });
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+          sum: 20,
+        };
+      });
+      const game = new Game();
+      game["player"].money = 1000;
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(game["player"].money).toBe(1200);
+      expect(mockPrintLine).toHaveBeenCalledTimes(2);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        `\n${colors.bold.red("You Win!!")}`
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        `\n` + colors.bold.red(`You won `) + colors.bold.red(`$100`)
+      );
+    });
+    it("上記以外のとき、player.betの値をplayer.moneyに足す。printLine関数でテキストを表示する", async () => {
+      MockDealer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+          sum: 20,
+        };
+      });
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBlackjack: false,
+          sum: 20,
+        };
+      });
+      const game = new Game();
+      game["player"].money = 1000;
+      game["player"].bet = 100;
+
+      game["checkResult"]();
+      expect(game["player"].money).toBe(1100);
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(`\n${colors.bold("Draw")}`);
     });
   });
 });

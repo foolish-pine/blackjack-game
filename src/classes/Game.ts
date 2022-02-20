@@ -147,77 +147,61 @@ export class Game {
   }
 
   private checkResult() {
-    // FIXME: 条件分岐リファクタリングする
     if (this.dealer.isBusted) {
       this.player.money += 2 * this.player.bet;
       printLine(`\n${colors.bold.red("Dealer Busted")}`);
       printLine(`\n${colors.bold.red("You Win!!")}`);
       printLine(
-        "\n" +
-          colors.bold.red("You won ") +
+        `\n` +
+          colors.bold.red(`You won `) +
           colors.bold.red(`$${this.player.bet}`)
       );
     } else if (this.player.isBusted) {
       printLine(`\n${colors.bold.blue("You Busted")}`);
       printLine(`\n${colors.bold.blue("You Lose")}`);
       printLine(
-        "\n" +
-          colors.bold.blue("You lost ") +
+        `\n` +
+          colors.bold.blue(`You lost `) +
           colors.bold.blue(`$${this.player.bet}`)
       );
-    } else if (this.dealer.sum === 21 && this.player.sum === 21) {
-      if (
-        (this.dealer.isBlackjack && this.player.isBlackjack) ||
-        (!this.dealer.isBlackjack && !this.player.isBlackjack)
-      ) {
-        this.player.money += this.player.bet;
-        printLine(`\n${colors.bold("Draw")}`);
-      } else if (this.dealer.isBlackjack && !this.player.isBlackjack) {
-        printLine(`\n${colors.bold.blue("You Lose")}`);
-        printLine(
-          "\n" +
-            colors.bold.blue("You lost ") +
-            colors.bold.blue(`$${this.player.bet}`)
-        );
-      } else {
-        this.player.money += Math.floor(2.5 * this.player.bet);
-        printLine(`\n${colors.rainbow("B L A C K J A C K")}`);
-        printLine(`\n${colors.bold.red("You Win!!")}`);
-        printLine(
-          "\n" +
-            colors.bold.red("You won ") +
-            colors.bold.red(`$${1.5 * this.player.bet}`)
-        );
-      }
-    } else if (this.player.isBlackjack) {
+    } else if (this.dealer.isBlackjack && this.player.isBlackjack) {
+      this.player.money += this.player.bet;
+      printLine(`\n${colors.bold("Draw")}`);
+    } else if (this.dealer.isBlackjack && !this.player.isBlackjack) {
+      printLine(`\n${colors.bold.blue("You Lose")}`);
+      printLine(
+        `\n` +
+          colors.bold.blue(`You lost `) +
+          colors.bold.blue(`$${this.player.bet}`)
+      );
+    } else if (!this.dealer.isBlackjack && this.player.isBlackjack) {
       this.player.money += Math.floor(2.5 * this.player.bet);
       printLine(`\n${colors.rainbow("B L A C K J A C K")}`);
       printLine(`\n${colors.bold.red("You Win!!")}`);
       printLine(
-        "\n" +
+        `\n` +
           colors.bold.red("You won ") +
           colors.bold.red(`$${1.5 * this.player.bet}`)
       );
     } else if (this.dealer.sum > this.player.sum) {
       printLine(`\n${colors.bold.blue("You Lose")}`);
       printLine(
-        "\n" +
-          colors.bold.blue("You lost ") +
+        `\n` +
+          colors.bold.blue(`You lost `) +
           colors.bold.blue(`$${this.player.bet}`)
       );
     } else if (this.dealer.sum < this.player.sum) {
       this.player.money += 2 * this.player.bet;
       printLine(`\n${colors.bold.red("You Win!!")}`);
       printLine(
-        "\n" +
-          colors.bold.red("You won ") +
+        `\n` +
+          colors.bold.red(`You won `) +
           colors.bold.red(`$${this.player.bet}`)
       );
     } else {
       this.player.money += this.player.bet;
       printLine(`\n${colors.bold("Draw")}`);
     }
-    this.player.renderMoney();
   }
 
   private async play() {
@@ -255,6 +239,7 @@ export class Game {
     }
 
     this.checkResult();
+    this.player.renderMoney();
   }
 
   async start() {
