@@ -146,6 +146,13 @@ export class Game {
     await promptInput(colors.bold(`\n(Enter)`));
   }
 
+  private async revealDealersSecondCard() {
+    this.dealer.renderSecondCard();
+    this.dealer.renderHand();
+    this.player.renderHand();
+    await promptInput(colors.bold("\n(Enter)"));
+  }
+
   private checkResult() {
     if (this.dealer.isBusted) {
       this.player.money += 2 * this.player.bet;
@@ -228,10 +235,7 @@ export class Game {
       return;
     }
 
-    this.dealer.renderSecondCard();
-    this.dealer.renderHand();
-    this.player.renderHand();
-    await promptInput(colors.bold("\n(Enter)"));
+    await this.revealDealersSecondCard();
 
     while (this.isDealerOnAction) {
       // ディーラーの手札の合計が17かつ手札にエースが含まれるとき、または17未満のとき、条件を満たさなくなるまで以下を繰り返す
