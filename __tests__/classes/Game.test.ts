@@ -650,4 +650,17 @@ describe("Gameクラス", () => {
       expect(mockPrintLine).toHaveBeenCalledWith(`\n${colors.bold("Draw")}`);
     });
   });
+
+  describe("revealDealersSecondCard()メソッド", () => {
+    it("dealer.renderSecondCard()メソッド、dealer.renderHand()メソッド、player.renderHand()メソッドを呼び出し、文字列を引数にpromptInput関数を呼び出す", async () => {
+      const game = new Game();
+
+      game["revealDealersSecondCard"]();
+      expect(game["dealer"].renderSecondCard).toHaveBeenCalledTimes(1);
+      expect(game["dealer"].renderHand).toHaveBeenCalledTimes(1);
+      expect(game["player"].renderHand).toHaveBeenCalledTimes(1);
+      expect(mockPromptInput).toHaveBeenCalledTimes(1);
+      expect(mockPromptInput).toHaveBeenCalledWith(colors.bold("\n(Enter)"));
+    });
+  });
 });
