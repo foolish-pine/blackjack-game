@@ -660,7 +660,7 @@ describe("Gameクラス", () => {
       expect(game["dealer"].renderHand).toHaveBeenCalledTimes(1);
       expect(game["player"].renderHand).toHaveBeenCalledTimes(1);
       expect(mockPromptInput).toHaveBeenCalledTimes(1);
-      expect(mockPromptInput).toHaveBeenCalledWith(colors.bold("\n(Enter)"));
+      expect(mockPromptInput).toHaveBeenCalledWith(colors.bold(`\n(Enter)`));
     });
   });
 });

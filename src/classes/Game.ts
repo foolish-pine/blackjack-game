@@ -150,7 +150,7 @@ export class Game {
     this.dealer.renderSecondCard();
     this.dealer.renderHand();
     this.player.renderHand();
-    await promptInput(colors.bold("\n(Enter)"));
+    await promptInput(colors.bold(`\n(Enter)`));
   }
 
   private checkResult() {
