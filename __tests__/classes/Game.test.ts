@@ -663,4 +663,135 @@ describe("Gameクラス", () => {
       expect(mockPromptInput).toHaveBeenCalledWith(colors.bold(`\n(Enter)`));
     });
   });
+
+  describe("play()メソッド", () => {
+    it("各メソッドを呼び出してゲームを進行する。isPlayerOnAction、isDealerOnAction、player.isBustedがfalseのとき", async () => {
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBusted: false,
+          renderMoney: jest.fn(),
+        };
+      });
+      jest
+        .spyOn(Game.prototype as any, "isPlayerOnAction", "get")
+        .mockReturnValue(false);
+      jest
+        .spyOn(Game.prototype as any, "isDealerOnAction", "get")
+        .mockReturnValue(false);
+      jest.spyOn(Game.prototype as any, "reset").mockImplementation();
+      jest.spyOn(Game.prototype as any, "setBet").mockImplementation();
+      jest.spyOn(Game.prototype as any, "deal").mockImplementation();
+      jest
+        .spyOn(Game.prototype as any, "revealDealersSecondCard")
+        .mockImplementation();
+      jest.spyOn(Game.prototype as any, "checkResult").mockImplementation();
+      const game = new Game();
+
+      await game["play"]();
+      expect(game["player"].renderMoney).toHaveBeenCalledTimes(2);
+      expect(game["setBet"]).toHaveBeenCalledTimes(1);
+      expect(game["deal"]).toHaveBeenCalledTimes(1);
+      expect(game["revealDealersSecondCard"]).toHaveBeenCalledTimes(1);
+      expect(game["checkResult"]).toHaveBeenCalledTimes(1);
+    });
+    it("各メソッドを呼び出してゲームを進行する。isPlayerOnActionがtrueのとき、falseになるまで特定の処理を繰り返す", async () => {
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBusted: false,
+          renderMoney: jest.fn(),
+        };
+      });
+      jest
+        .spyOn(Game.prototype as any, "isPlayerOnAction", "get")
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(false);
+      jest
+        .spyOn(Game.prototype as any, "isDealerOnAction", "get")
+        .mockReturnValue(false);
+      jest.spyOn(Game.prototype as any, "reset").mockImplementation();
+      jest.spyOn(Game.prototype as any, "setBet").mockImplementation();
+      jest.spyOn(Game.prototype as any, "deal").mockImplementation();
+      jest
+        .spyOn(Game.prototype as any, "promptInputAction")
+        .mockReturnValue("h");
+      jest.spyOn(Game.prototype as any, "doPlayerAction").mockImplementation();
+      jest
+        .spyOn(Game.prototype as any, "revealDealersSecondCard")
+        .mockImplementation();
+      jest.spyOn(Game.prototype as any, "checkResult").mockImplementation();
+      const game = new Game();
+
+      await game["play"]();
+      expect(game["player"].renderMoney).toHaveBeenCalledTimes(2);
+      expect(game["setBet"]).toHaveBeenCalledTimes(1);
+      expect(game["deal"]).toHaveBeenCalledTimes(1);
+      expect(game["revealDealersSecondCard"]).toHaveBeenCalledTimes(1);
+      expect(game["promptInputAction"]).toHaveBeenCalledTimes(2);
+      expect(game["doPlayerAction"]).toHaveBeenCalledTimes(2);
+      expect(game["doPlayerAction"]).toHaveBeenCalledWith("h");
+      expect(game["checkResult"]).toHaveBeenCalledTimes(1);
+    });
+    it("各メソッドを呼び出してゲームを進行する。isDealerOnActionがtrueのとき、falseになるまで特定の処理を繰り返す", async () => {
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBusted: false,
+          renderMoney: jest.fn(),
+        };
+      });
+      jest
+        .spyOn(Game.prototype as any, "isPlayerOnAction", "get")
+        .mockReturnValueOnce(false);
+      jest
+        .spyOn(Game.prototype as any, "isDealerOnAction", "get")
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(false);
+      jest.spyOn(Game.prototype as any, "reset").mockImplementation();
+      jest.spyOn(Game.prototype as any, "setBet").mockImplementation();
+      jest.spyOn(Game.prototype as any, "deal").mockImplementation();
+      jest
+        .spyOn(Game.prototype as any, "promptInputAction")
+        .mockReturnValue("h");
+      jest.spyOn(Game.prototype as any, "doDealerAction").mockImplementation();
+      jest
+        .spyOn(Game.prototype as any, "revealDealersSecondCard")
+        .mockImplementation();
+      jest.spyOn(Game.prototype as any, "checkResult").mockImplementation();
+      const game = new Game();
+
+      await game["play"]();
+      expect(game["player"].renderMoney).toHaveBeenCalledTimes(2);
+      expect(game["setBet"]).toHaveBeenCalledTimes(1);
+      expect(game["deal"]).toHaveBeenCalledTimes(1);
+      expect(game["revealDealersSecondCard"]).toHaveBeenCalledTimes(1);
+      expect(game["doDealerAction"]).toHaveBeenCalledTimes(2);
+      expect(game["checkResult"]).toHaveBeenCalledTimes(1);
+    });
+    it("各メソッドを呼び出してゲームを進行する。player.isBustedがtrueのとき、途中で処理を打ち切る", async () => {
+      MockPlayer.mockImplementation(() => {
+        return {
+          isBusted: true,
+          renderMoney: jest.fn(),
+        };
+      });
+      jest
+        .spyOn(Game.prototype as any, "isPlayerOnAction", "get")
+        .mockReturnValueOnce(false);
+      jest
+        .spyOn(Game.prototype as any, "isDealerOnAction", "get")
+        .mockReturnValueOnce(false);
+      jest.spyOn(Game.prototype as any, "reset").mockImplementation();
+      jest.spyOn(Game.prototype as any, "setBet").mockImplementation();
+      jest.spyOn(Game.prototype as any, "deal").mockImplementation();
+      jest.spyOn(Game.prototype as any, "checkResult").mockImplementation();
+      const game = new Game();
+
+      await game["play"]();
+      expect(game["player"].renderMoney).toHaveBeenCalledTimes(1);
+      expect(game["setBet"]).toHaveBeenCalledTimes(1);
+      expect(game["deal"]).toHaveBeenCalledTimes(1);
+      expect(game["checkResult"]).toHaveBeenCalledTimes(1);
+    });
+  });
 });
