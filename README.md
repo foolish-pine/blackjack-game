@@ -3,7 +3,7 @@
 <br>
 <br>
 ## デモ
-<img src="https://github.com/foolish-pine/blackjack-game/wiki/images/blackjack.gif" width="500">
+<img src="https://user-images.githubusercontent.com/59694183/155260710-3aeca1bb-867f-4357-bb90-eb6fb887b193.gif">
 <br>
 
 ## 動作環境
