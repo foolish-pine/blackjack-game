@@ -253,10 +253,10 @@ export class Game {
       await this.play();
       if (this.player.money > 0) {
         printLine(colors.bold(`\nPlease Enter to start next game`));
-        await promptInput(colors.bold("\n(Enter)"));
+        await promptInput(colors.bold(`\n(Enter)`));
       }
     }
-    printLine(colors.bold("\nGame Over!!"));
+    printLine(colors.bold(`\nGame Over!!`));
     process.exit(0);
   }
 }

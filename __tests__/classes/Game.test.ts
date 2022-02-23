@@ -826,7 +826,7 @@ describe("Gameクラス", () => {
       );
       expect(mockPromptInput).toHaveBeenNthCalledWith(
         2,
-        colors.bold("\n(Enter)")
+        colors.bold(`\n(Enter)`)
       );
       expect(mockPrintLine).toHaveBeenCalledTimes(2);
       expect(mockPrintLine).toHaveBeenNthCalledWith(
@@ -835,7 +835,7 @@ describe("Gameクラス", () => {
       );
       expect(mockPrintLine).toHaveBeenNthCalledWith(
         2,
-        colors.bold("\nGame Over!!")
+        colors.bold(`\nGame Over!!`)
       );
       expect(game["play"]).toHaveBeenCalledTimes(2);
       expect(mockProcessExit).toHaveBeenCalledTimes(1);
