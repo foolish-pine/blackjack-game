@@ -58,7 +58,7 @@ describe("Gameクラス", () => {
       const result = game["validateBet"]("text");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        `\nPlease input a positive integer.`
+        colors.bold(`\nPlease input a positive integer.`)
       );
       expect(result).toBe(false);
     });
@@ -68,7 +68,7 @@ describe("Gameクラス", () => {
       const result = game["validateBet"]("1.2");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        `\nPlease input a positive integer.`
+        colors.bold(`\nPlease input a positive integer.`)
       );
       expect(result).toBe(false);
     });
@@ -78,7 +78,7 @@ describe("Gameクラス", () => {
       const result = game["validateBet"]("0");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        `\nPlease input a positive integer.`
+        colors.bold(`\nPlease input a positive integer.`)
       );
       expect(result).toBe(false);
     });
@@ -88,7 +88,7 @@ describe("Gameクラス", () => {
       const result = game["validateBet"]("-1");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        `\nPlease input a positive integer.`
+        colors.bold(`\nPlease input a positive integer.`)
       );
       expect(result).toBe(false);
     });
@@ -99,7 +99,7 @@ describe("Gameクラス", () => {
       const result = game["validateBet"]("1001");
       expect(mockPrintLine).toHaveBeenCalledTimes(1);
       expect(mockPrintLine).toHaveBeenCalledWith(
-        `\nPlease bet an amount of money you can.`
+        colors.bold(`\nPlease bet an amount of money you can.`)
       );
       expect(result).toBe(false);
     });

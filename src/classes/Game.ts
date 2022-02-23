@@ -55,10 +55,10 @@ export class Game {
       !Number.isInteger(Number(inputBet)) ||
       Number(inputBet) <= 0
     ) {
-      printLine(`\nPlease input a positive integer.`);
+      printLine(colors.bold(`\nPlease input a positive integer.`));
       return false;
     } else if (Number(inputBet) > this.player.money) {
-      printLine(`\nPlease bet an amount of money you can.`);
+      printLine(colors.bold(`\nPlease bet an amount of money you can.`));
       return false;
     } else {
       return true;
