@@ -794,4 +794,52 @@ describe("Gameクラス", () => {
       expect(game["checkResult"]).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe("start()メソッド", () => {
+    it("ゲームをスタートする。player.moneyが0以下になるまでplay()メソッドを繰り返す", async () => {
+      MockPlayer.mockImplementation(() => {
+        return {
+          get money() {
+            return;
+          },
+        };
+      });
+      const game = new Game();
+      jest.spyOn(Game.prototype as any, "renderTitle").mockImplementation();
+      jest.spyOn(Game.prototype as any, "play").mockImplementation();
+      jest.spyOn(Game.prototype as any, "play").mockImplementation();
+      jest
+        .spyOn(game["player"] as any, "money", "get")
+        .mockImplementation()
+        .mockReturnValueOnce(1000)
+        .mockReturnValueOnce(500)
+        .mockReturnValueOnce(500)
+        .mockReturnValueOnce(0);
+      const mockProcessExit = jest.spyOn(process, "exit").mockImplementation();
+
+      await game["start"]();
+      expect(game["renderTitle"]).toHaveBeenCalledTimes(1);
+      expect(mockPromptInput).toHaveBeenCalledTimes(2);
+      expect(mockPromptInput).toHaveBeenNthCalledWith(
+        1,
+        colors.bold(`\nPlease Enter to start`)
+      );
+      expect(mockPromptInput).toHaveBeenNthCalledWith(
+        2,
+        colors.bold("\n(Enter)")
+      );
+      expect(mockPrintLine).toHaveBeenCalledTimes(2);
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        1,
+        colors.bold(`\nPlease Enter to start next game`)
+      );
+      expect(mockPrintLine).toHaveBeenNthCalledWith(
+        2,
+        colors.bold("\nGame Over!!")
+      );
+      expect(game["play"]).toHaveBeenCalledTimes(2);
+      expect(mockProcessExit).toHaveBeenCalledTimes(1);
+      expect(mockProcessExit).toHaveBeenCalledWith(0);
+    });
+  });
 });
