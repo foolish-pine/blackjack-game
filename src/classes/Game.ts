@@ -112,20 +112,27 @@ export class Game {
   }
 
   private async doPlayerAction(inputAction: playerAction) {
-    if (inputAction === "h") {
-      this.player.hit();
-      printLine(colors.bold.green(`\nYou hit.`));
-      await promptInput(colors.bold(`\n(Enter)`));
-      this.player.renderNewCard();
-    } else if (inputAction === "d") {
-      this.player.doubleDown();
-      printLine(colors.bold.cyan(`\nYou doubled down.`));
-      await promptInput(colors.bold(`\n(Enter)`));
-      this.player.renderNewCard();
-    } else if (inputAction === "s") {
-      this.player.stand();
-      printLine(colors.bold.yellow(`\nYou stand.`));
-      await promptInput(colors.bold(`\n(Enter)`));
+    switch (inputAction) {
+      case "h":
+        this.player.hit();
+        printLine(colors.bold.green(`\nYou hit.`));
+        await promptInput(colors.bold(`\n(Enter)`));
+        this.player.renderNewCard();
+        break;
+      case "d":
+        this.player.doubleDown();
+        printLine(colors.bold.cyan(`\nYou doubled down.`));
+        await promptInput(colors.bold(`\n(Enter)`));
+        this.player.renderNewCard();
+        break;
+      case "s":
+        this.player.stand();
+        printLine(colors.bold.yellow(`\nYou stand.`));
+        await promptInput(colors.bold(`\n(Enter)`));
+        break;
+      default:
+        const neverValue: never = inputAction;
+        throw new Error(`${neverValue}は無効な入力です。`);
     }
     this.dealer.renderHand();
     this.player.renderHand();
