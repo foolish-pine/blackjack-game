@@ -132,6 +132,10 @@ describe("Gameクラス", () => {
       const game = new Game();
 
       game["deal"]();
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(
+        colors.bold(`\nCards are dealt.\n`)
+      );
       expect(game["dealer"].deal).toHaveBeenCalledTimes(1);
       expect(game["player"].deal).toHaveBeenCalledTimes(1);
       expect(game["dealer"].renderHand).toHaveBeenCalledTimes(1);

@@ -42,6 +42,7 @@ export class Game {
   }
 
   private deal() {
+    printLine(colors.bold(`\nCards are dealt.\n`));
     this.dealer.deal();
     this.player.deal();
     this.dealer.renderHand();
