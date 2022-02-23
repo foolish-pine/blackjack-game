@@ -302,9 +302,11 @@ describe("Gameクラス", () => {
       await game["promptInputAction"]();
       expect(mockPromptSelect).toHaveBeenCalledTimes(1);
       expect(mockPromptSelect).toHaveBeenCalledWith(
-        `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-          "Hit[h]"
-        )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+        `\n${colors.bold("Select Your Action.")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.green("Hit[h]")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.yellow("Stand[s]")}\n`,
         playerActionsExceptDoubleDown
       );
     });
@@ -317,9 +319,11 @@ describe("Gameクラス", () => {
       await game["promptInputAction"]();
       expect(mockPromptSelect).toHaveBeenCalledTimes(1);
       expect(mockPromptSelect).toHaveBeenCalledWith(
-        `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-          "Hit[h]"
-        )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+        `\n${colors.bold("Select Your Action.")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.green("Hit[h]")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.yellow("Stand[s]")}\n`,
         playerActionsExceptDoubleDown
       );
     });
@@ -332,11 +336,13 @@ describe("Gameクラス", () => {
       await game["promptInputAction"]();
       expect(mockPromptSelect).toHaveBeenCalledTimes(1);
       expect(mockPromptSelect).toHaveBeenCalledWith(
-        `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-          "Hit[h]"
-        )} ${colors.bold("/")} ${colors.bold.cyan(
-          "DoubleDown[d]"
-        )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+        `\n${colors.bold("Select Your Action.")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.green("Hit[h]")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.cyan("DoubleDown[d]")}\n${colors.bold(
+          "-"
+        )} ${colors.bold.yellow("Stand[s]")}\n`,
         playerActions
       );
     });

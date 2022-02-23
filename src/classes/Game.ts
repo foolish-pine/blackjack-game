@@ -97,17 +97,21 @@ export class Game {
   private async promptInputAction() {
     return this.player.hasHit || this.player.money - this.player.bet < 0
       ? await promptSelect<playerActionExceptDoubleDown>(
-          `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-            "Hit[h]"
-          )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+          `\n${colors.bold("Select Your Action.")}\n${colors.bold(
+            "-"
+          )} ${colors.bold.green("Hit[h]")}\n${colors.bold(
+            "-"
+          )} ${colors.bold.yellow("Stand[s]")}\n`,
           playerActionsExceptDoubleDown
         )
       : await promptSelect<playerAction>(
-          `${colors.bold("\nSelect Your Action.")} ${colors.bold.green(
-            "Hit[h]"
-          )} ${colors.bold("/")} ${colors.bold.cyan(
-            "DoubleDown[d]"
-          )} ${colors.bold("/")} ${colors.bold.yellow("Stand[s]")}\n`,
+          `\n${colors.bold("Select Your Action.")}\n${colors.bold(
+            "-"
+          )} ${colors.bold.green("Hit[h]")}\n${colors.bold(
+            "-"
+          )} ${colors.bold.cyan("DoubleDown[d]")}\n${colors.bold(
+            "-"
+          )} ${colors.bold.yellow("Stand[s]")}\n`,
           playerActions
         );
   }
