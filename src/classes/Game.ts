@@ -151,6 +151,7 @@ export class Game {
   }
 
   private async doDealerAction() {
+    printLine(colors.bold(`\nDealer hit.`));
     this.dealer.hit();
     this.dealer.renderNewCard();
     this.dealer.renderHand();

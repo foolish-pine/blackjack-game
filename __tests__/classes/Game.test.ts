@@ -445,6 +445,8 @@ describe("Gameクラス", () => {
       const game = new Game();
 
       await game["doDealerAction"]();
+      expect(mockPrintLine).toHaveBeenCalledTimes(1);
+      expect(mockPrintLine).toHaveBeenCalledWith(colors.bold(`\nDealer hit.`));
       expect(game["dealer"].hit).toHaveBeenCalledTimes(1);
       expect(game["dealer"].renderNewCard).toHaveBeenCalledTimes(1);
       expect(game["dealer"].renderHand).toHaveBeenCalledTimes(1);
