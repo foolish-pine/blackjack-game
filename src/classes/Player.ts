@@ -1,5 +1,6 @@
 import colors from "colors";
 
+import { cardSymbols } from "./Card";
 import { Deck } from "./Deck";
 import { Participant } from "./Participant";
 
@@ -16,7 +17,7 @@ export class Player extends Participant {
     super(deck);
   }
 
-  get money(): number {
+  get money() {
     return this._money;
   }
 
@@ -24,7 +25,7 @@ export class Player extends Participant {
     this._money = money;
   }
 
-  get bet(): number {
+  get bet() {
     return this._bet;
   }
 
@@ -32,7 +33,7 @@ export class Player extends Participant {
     this._bet = bet;
   }
 
-  get hasHit(): boolean {
+  get hasHit() {
     return this._hasHit;
   }
 
@@ -40,7 +41,7 @@ export class Player extends Participant {
     this._hasHit = hasHit;
   }
 
-  get hasDoubleDowned(): boolean {
+  get hasDoubleDowned() {
     return this._hasDoubleDowned;
   }
 
@@ -48,7 +49,7 @@ export class Player extends Participant {
     this._hasDoubleDowned = hasDoubleDowned;
   }
 
-  get isStanding(): boolean {
+  get isStanding() {
     return this._isStanding;
   }
 
@@ -56,7 +57,7 @@ export class Player extends Participant {
     this._isStanding = isStanding;
   }
 
-  clearStatus(): void {
+  clearStatus() {
     this.hand = [];
     this.bet = 0;
     this.hasHit = false;
@@ -64,7 +65,7 @@ export class Player extends Participant {
     this.isStanding = false;
   }
 
-  renderMoney(): void {
+  renderMoney() {
     printLine(
       `\n${colors.bold.yellow("Your money: ")}${colors.bold.yellow(
         `$${this.money}`
@@ -72,45 +73,44 @@ export class Player extends Participant {
     );
   }
 
-  renderHand(): void {
-    super.renderHand(`\nYou:    `);
-  }
-
-  renderNewCard(): void {
-    let renderedCard = colors.bold("\nYour new card: ");
-    if (
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)
-    ) {
-      renderedCard += colors.red.bgWhite(
-        ` ${this.hand[this.hand.length - 1].symbol} ${
-          this.hand[this.hand.length - 1].rank
-        } `
-      );
-    } else {
-      renderedCard += colors.black.bgWhite(
-        ` ${this.hand[this.hand.length - 1].symbol} ${
-          this.hand[this.hand.length - 1].rank
-        } `
-      );
+  renderHand() {
+    let renderedHand = colors.bold(`\nYou:    `);
+    for (let i = 0; i < this.hand.length; i++) {
+      if (
+        this.hand[i].symbol === cardSymbols.get("heart") ||
+        this.hand[i].symbol === cardSymbols.get("diamond")
+      ) {
+        renderedHand += colors.red.bgWhite(
+          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
+        );
+      } else {
+        renderedHand += colors.black.bgWhite(
+          ` ${this.hand[i].symbol} ${this.hand[i].rank} `
+        );
+      }
+      renderedHand += `  `;
     }
-    renderedCard += "\n";
-    printLine(renderedCard);
+    renderedHand += `\n`;
+    printLine(renderedHand);
   }
 
-  hit(): void {
+  renderNewCard() {
+    super.renderNewCard(`\nYour new card: `);
+  }
+
+  hit() {
     this.hasHit = true;
-    this.hand.push(this.deck.draw());
+    super.hit();
   }
 
-  doubleDown(): void {
+  doubleDown() {
     this.hasDoubleDowned = true;
     this.money -= this.bet;
     this.bet *= 2;
-    this.hand.push(this.deck.draw());
+    super.hit();
   }
 
-  stand(): void {
+  stand() {
     this.isStanding = true;
   }
 }

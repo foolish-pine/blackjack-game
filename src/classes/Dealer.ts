@@ -1,5 +1,6 @@
 import colors from "colors";
 
+import { Card, cardSymbols } from "./Card";
 import { Deck } from "./Deck";
 import { Participant } from "./Participant";
 
@@ -12,7 +13,7 @@ export class Dealer extends Participant {
     super(deck);
   }
 
-  get isSecondCardOpen(): boolean {
+  get isSecondCardOpen() {
     return this._isSecondCardOpen;
   }
 
@@ -20,18 +21,22 @@ export class Dealer extends Participant {
     this._isSecondCardOpen = isSecondCardOpen;
   }
 
-  clearStatus(): void {
+  get hasAce() {
+    return this.hand.filter((card) => card.rank === "A").length >= 1;
+  }
+
+  clearStatus() {
     this.hand = [];
     this.isSecondCardOpen = false;
   }
 
-  renderSecondCard(): void {
+  renderSecondCard() {
     this.isSecondCardOpen = true;
 
-    let renderedCard = colors.bold("\nDealer's second card: ");
+    let renderedCard = colors.bold(`\nDealer's second card: `);
     if (
-      this.hand[1].symbol === String.fromCodePoint(0x2665) ||
-      this.hand[1].symbol === String.fromCodePoint(0x2666)
+      this.hand[1].symbol === cardSymbols.get("heart") ||
+      this.hand[1].symbol === cardSymbols.get("diamond")
     ) {
       renderedCard += colors.red.bgWhite(
         ` ${this.hand[1].symbol} ${this.hand[1].rank} `
@@ -41,17 +46,17 @@ export class Dealer extends Participant {
         ` ${this.hand[1].symbol} ${this.hand[1].rank} `
       );
     }
-    renderedCard += "\n";
+    renderedCard += `\n`;
     printLine(renderedCard);
   }
 
-  renderHand(): void {
+  renderHand() {
     let renderedHand = colors.bold(`\nDealer: `);
     if (this.isSecondCardOpen) {
       for (let i = 0; i < this.hand.length; i++) {
         if (
-          this.hand[i].symbol === String.fromCodePoint(0x2665) ||
-          this.hand[i].symbol === String.fromCodePoint(0x2666)
+          this.hand[i].symbol === cardSymbols.get("heart") ||
+          this.hand[i].symbol === cardSymbols.get("diamond")
         ) {
           renderedHand += colors.red.bgWhite(
             ` ${this.hand[i].symbol} ${this.hand[i].rank} `
@@ -61,12 +66,12 @@ export class Dealer extends Participant {
             ` ${this.hand[i].symbol} ${this.hand[i].rank} `
           );
         }
-        renderedHand += "  ";
+        renderedHand += `  `;
       }
     } else {
       if (
-        this.hand[0].symbol === String.fromCodePoint(0x2665) ||
-        this.hand[0].symbol === String.fromCodePoint(0x2666)
+        this.hand[0].symbol === cardSymbols.get("heart") ||
+        this.hand[0].symbol === cardSymbols.get("diamond")
       ) {
         renderedHand += colors.red.bgWhite(
           ` ${this.hand[0].symbol} ${this.hand[0].rank} `
@@ -76,32 +81,14 @@ export class Dealer extends Participant {
           ` ${this.hand[0].symbol} ${this.hand[0].rank} `
         );
       }
-      renderedHand += "  ";
-      renderedHand += colors.black.bgWhite(" ??? ");
+      renderedHand += `  `;
+      renderedHand += colors.black.bgWhite(` ??? `);
     }
-    renderedHand += "\n";
+    renderedHand += `\n`;
     printLine(renderedHand);
   }
 
-  renderNewCard(): void {
-    let renderedCard = colors.bold("\nDealer's new card: ");
-    if (
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2665) ||
-      this.hand[this.hand.length - 1].symbol === String.fromCodePoint(0x2666)
-    ) {
-      renderedCard += colors.red.bgWhite(
-        ` ${this.hand[this.hand.length - 1].symbol} ${
-          this.hand[this.hand.length - 1].rank
-        } `
-      );
-    } else {
-      renderedCard += colors.black.bgWhite(
-        ` ${this.hand[this.hand.length - 1].symbol} ${
-          this.hand[this.hand.length - 1].rank
-        } `
-      );
-    }
-    renderedCard += "\n";
-    console.log(renderedCard);
+  renderNewCard() {
+    super.renderNewCard(`\nDealer's new card: `);
   }
 }
